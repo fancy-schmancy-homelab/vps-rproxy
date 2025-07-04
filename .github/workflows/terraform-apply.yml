@@ -47,7 +47,6 @@ jobs:
                 comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
             
             - name: Ansible Run
-              if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
               run: |
                 cd ansible && ansible-playbook -b run.yaml --limit {{HOST}} {{TAGS}}
                 cd ansible && ansible-galaxy install -r requirements.yaml {{FORCE}}
