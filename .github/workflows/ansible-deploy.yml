@@ -1,0 +1,29 @@
+name: "Ansible Deploy"
+
+on:
+    workflow_run:
+        workflows: ["Terraform Apply"]
+        types:
+            - completed
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Connect Tailscale
+              uses: tailscale/github-action@v2
+              with:
+                oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
+                oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
+                tags: "github"
+            
+            - name: Ansible Playbook
+              run: |
+                cd ansible && ansible-galaxy install -r requirements.yaml
+                cd ansible && ansible-playbook -b run.yaml --limit caddy
+              env:
+                ANSIBLE_HOST_KEY_CHECKING: "False"
+                ANSIBLE_CONFIG: ./ansible/ansible.cfg
