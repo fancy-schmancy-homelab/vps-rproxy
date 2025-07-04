@@ -1,6 +1,6 @@
 ---
   - hosts: nyc3-terraform-caddy
-    env:
+    vars:
       cloudflare_api_token: ${{ secrets.CF_TOKEN }}
     roles:
       - ironicbadger.caddy
