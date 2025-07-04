@@ -9,7 +9,7 @@ env:
     TF_CLOUD_ORGANIZATION: "homelab-578"
     TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
     TF_WORKSPACE: "vps-rproxy"
-    CONFIG_DIRECTORY: "./"
+    CONFIG_DIRECTORY: "./terraform"
 
 
 jobs:
