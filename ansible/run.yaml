@@ -1,5 +1,5 @@
 ---
-  - hosts: atl1-terraform-caddy
+  - hosts: nyc3-terraform-caddy
     env:
       cloudflare_api_token: ${{ secrets.CF_TOKEN }}
     roles:
