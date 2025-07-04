@@ -13,6 +13,13 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
+            
+            - name: Set up Ansible
+              run: |
+                cd ansible && ansible-galaxy install -r requirements.yaml
+              env:
+                ANSIBLE_HOST_KEY_CHECKING: "False"
+                ANSIBLE_CONFIG: ./ansible/ansible.cfg
 
             - name: Connect Tailscale
               uses: tailscale/github-action@v2
@@ -20,10 +27,10 @@ jobs:
                 oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
                 oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
                 tags: "tag:github"
+                version: "latest"
             
             - name: Ansible Playbook
               run: |
-                cd ansible && ansible-galaxy install -r requirements.yaml
                 cd ansible && ansible-playbook -b run.yaml --limit caddy
               env:
                 ANSIBLE_HOST_KEY_CHECKING: "False"
