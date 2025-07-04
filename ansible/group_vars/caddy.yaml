@@ -8,8 +8,8 @@ caddy_tls_providers:
 
 caddy_endpoints:
   - friendly_name: jf
-    fqdn: jf.initechlabs.dev
-    upstream: "fakenas:2285"
+    fqdn: jf.amireally.online
+    upstream: "truenas-scale:8096"
     tls_insecure: false
     tls_provider: cloudflare
   # - friendly_name: test2
