@@ -1,4 +1,11 @@
 terraform {
+  cloud {
+    organization = "homelab-578"
+
+    workspaces {
+      name = "vps-rproxy"
+    }
+  }
   required_providers {
     digitalocean = {
       source  = "digitalocean/digitalocean"
