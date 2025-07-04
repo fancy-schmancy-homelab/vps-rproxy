@@ -9,7 +9,8 @@ env:
   CONFIG_DIRECTORY: "./terraform"
 
 jobs:
-  deploy:
+  terraform-plan:
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
