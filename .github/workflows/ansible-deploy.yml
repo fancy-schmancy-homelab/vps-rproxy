@@ -35,3 +35,4 @@ jobs:
               env:
                 ANSIBLE_HOST_KEY_CHECKING: "False"
                 ANSIBLE_CONFIG: ./ansible/ansible.cfg
+                CF_TOKEN: ${{ secrets.CF_TOKEN }}
