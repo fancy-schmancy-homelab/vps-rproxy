@@ -2,10 +2,13 @@ name: "Ansible Deploy"
 
 on:
     workflow_dispatch:
+    push:
+      paths:
+          - 'ansible/**'
     workflow_run:
-        workflows: ["Terraform Apply"]
-        types:
-            - completed
+      workflows: ["Terraform Apply"]
+      types:
+          - completed
 
 jobs:
     deploy:
