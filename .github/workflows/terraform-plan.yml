@@ -1,6 +1,8 @@
 name: Droplet Deploy
 on:
   pull_request:
+    paths:
+      - 'terraform/**'
 
 env:
   TF_CLOUD_ORGANIZATION: "homelab-578"

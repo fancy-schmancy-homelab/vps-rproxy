@@ -2,6 +2,8 @@ name: "Terraform Apply"
 
 on:
     push:
+        paths:
+            - 'terraform/**'
         branches:
             - main
 
