@@ -9,7 +9,7 @@ caddy_tls_providers:
 caddy_endpoints:
   - friendly_name: jf
     fqdn: jf.amireally.online
-    upstream: "truenas-scale:8096"
+    upstream: "https://jellyfin.i-do.cyou"
     tls_insecure: false
     tls_provider: cloudflare
   # - friendly_name: test2
