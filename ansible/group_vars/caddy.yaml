@@ -12,8 +12,13 @@ caddy_endpoints:
     upstream: "truenas-scale:8096"
     tls_insecure: false
     tls_provider: cloudflare
-  # - friendly_name: test2
-  #   fqdn: test2.initechlabs.dev
-  #   upstream: "1.2.3.4:8080"
-  #   tls_insecure: true
-  #   tls_provider: cloudflare
+  - friendly_name: auth
+    fqdn: auth.amireally.online
+    upstream: "https://truenas-scale:30141"
+    tls_insecure: true
+    tls_provider: cloudflare
+  - friendly_name: abs
+    fqdn: abs.amireally.online
+    upstream: "truenas-scale:30067"
+    tls_insecure: false
+    tls_provider: cloudflare
