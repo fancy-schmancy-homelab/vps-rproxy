@@ -9,7 +9,7 @@ data "oci_identity_availability_domain" "ad" {
 }
 
 data "template_file" "cloud-config" {
-  template = "${file("digitalocean.tftpl")}"
+  template = "${file("cloudinit.tftpl")}"
   vars = {
     tailscale_auth_key = var.TS_AUTH_KEY
   }
