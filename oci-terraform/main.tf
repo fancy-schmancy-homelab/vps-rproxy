@@ -20,12 +20,13 @@ resource "oci_core_instance" "atlas_instance" {
 
   source_details {
     source_type = var.instance_source_type
-    source_id   = var.instance_image_ocid[var.region]
+    source_id   = var.instance_image_ocid[var.oci_region]
 		boot_volume_size_in_gbs = var.boot_volume_size_in_gbs
   }
 
   metadata = {
     ssh_authorized_keys = var.ssh_public_keys
+    user_data           = "${base64encode(data.template_file.cloud-config.rendered)}"
   }
 
   timeouts {
@@ -101,27 +102,22 @@ resource "oci_core_subnet" "atlas_subnet" {
   dhcp_options_id     = oci_core_vcn.atlas_vcn.default_dhcp_options_id
 }
 
-data "oci_identity_availability_domain" "ad" {
-  compartment_id = var.tenancy_ocid
-  ad_number      = var.availability_domain
-}
+# resource "null_resource" "remote-exec" {
+#   count = var.auto_iptables ? var.num_instances : 0
 
-resource "null_resource" "remote-exec" {
-  count = var.auto_iptables ? var.num_instances : 0
+#   connection {
+#     agent       = false
+#     timeout     = "30m"
+#     host        = element(oci_core_instance.atlas_instance.*.public_ip, count.index)
+#     user        = "ubuntu"
+#     private_key = file(var.ssh_private_key)
+#   }
 
-  connection {
-    agent       = false
-    timeout     = "30m"
-    host        = element(oci_core_instance.atlas_instance.*.public_ip, count.index)
-    user        = "ubuntu"
-    private_key = file(var.ssh_private_key)
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "export DATE=$(date +%Y%m%d); sudo iptables -L > \"/home/ubuntu/iptables-$DATE.bak\"",
-      "sudo sh -c 'iptables -D INPUT -j REJECT --reject-with icmp-host-prohibited 2> /dev/null; iptables-save > /etc/iptables/rules.v4;'",
-      "sudo sh -c 'iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited 2> /dev/null; iptables-save > /etc/iptables/rules.v4;'",
-    ]
-  }
-}
+#   provisioner "remote-exec" {
+#     inline = [
+#       "export DATE=$(date +%Y%m%d); sudo iptables -L > \"/home/ubuntu/iptables-$DATE.bak\"",
+#       "sudo sh -c 'iptables -D INPUT -j REJECT --reject-with icmp-host-prohibited 2> /dev/null; iptables-save > /etc/iptables/rules.v4;'",
+#       "sudo sh -c 'iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited 2> /dev/null; iptables-save > /etc/iptables/rules.v4;'",
+#     ]
+#   }
+# }

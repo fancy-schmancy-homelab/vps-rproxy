@@ -3,12 +3,12 @@ variable "fingerprint" {
   type        = string
 }
 
-variable "private_key_path" {
+variable "oci_private_key" {
   description = "Path to oci api private key used"
   type        = string
 }
 
-variable "region" {
+variable "oci_region" {
   description = "The oci region where resources will be created"
   type        = string
 }
@@ -121,9 +121,16 @@ variable "instance_source_type" {
 }
 
 variable "boot_volume_size_in_gbs" {
-  default     = "200"
+  default     = "50"
   description = "Bott volume size in GBs"
   type        = number
+}
+
+variable "TS_AUTH_KEY" {
+  default     = null
+  description = "Tailscale auth key to use for the instance."
+  type        = string
+  
 }
 
 variable "instance_image_ocid" {
