@@ -25,7 +25,7 @@ resource "oci_core_instance" "atlas_instance" {
   }
 
   metadata = {
-    ssh_authorized_keys = var.ssh_public_keys
+    ssh_authorized_keys = file("pubkey.pub")
     user_data           = "${base64encode(data.template_file.cloud-config.rendered)}"
   }
 
