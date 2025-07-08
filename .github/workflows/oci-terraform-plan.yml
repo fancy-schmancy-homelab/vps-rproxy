@@ -1,4 +1,4 @@
-name: OCI Terraform Plan
+name: Oracle Cloud Terraform Plan
 on:
   workflow_dispatch:
   pull_request:

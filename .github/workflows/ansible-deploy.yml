@@ -5,8 +5,10 @@ on:
     push:
       paths:
           - 'ansible/**'
+      branches:
+            - main
     workflow_run:
-      workflows: ["Terraform Apply"]
+      workflows: ["Oracle Cloud Terraform Apply","Digital Ocean Terraform Apply"]
       types:
           - completed
 
