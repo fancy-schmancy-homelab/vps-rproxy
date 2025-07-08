@@ -5,6 +5,8 @@ on:
     push:
       paths:
           - 'ansible/**'
+      branches:
+            - main
     workflow_run:
       workflows: ["Terraform Apply"]
       types:
