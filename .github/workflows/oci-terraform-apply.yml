@@ -3,15 +3,15 @@ name: "Terraform Apply"
 on:
     push:
         paths:
-            - 'terraform/**'
+            - 'oci-terraform/**'
         branches:
             - main
 
 env:
     TF_CLOUD_ORGANIZATION: "homelab-578"
     TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-    TF_WORKSPACE: "vps-rproxy"
-    CONFIG_DIRECTORY: "./terraform"
+    TF_WORKSPACE: "vps-rproxy-oci"
+    CONFIG_DIRECTORY: "./oci-terraform"
 
 
 jobs:
