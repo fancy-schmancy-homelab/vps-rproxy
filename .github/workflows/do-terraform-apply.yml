@@ -1,6 +1,7 @@
 name: "Digital Ocean Terraform Apply"
 
 on:
+    workflow_dispatch:
     push:
         paths:
             - 'do-terraform/**'
