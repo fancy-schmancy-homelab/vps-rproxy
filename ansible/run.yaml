@@ -1,5 +1,5 @@
 ---
-  - hosts: nyc3-terraform-caddy
+  - hosts: nyc3-terraform-caddy:shamb0
     vars:
       cloudflare_api_token: "{{ lookup('env', 'CF_TOKEN') }}"
     roles:
