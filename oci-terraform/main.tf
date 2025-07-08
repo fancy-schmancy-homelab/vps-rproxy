@@ -24,6 +24,25 @@ resource "oci_core_instance" "atlas_instance" {
 		boot_volume_size_in_gbs = var.boot_volume_size_in_gbs
   }
 
+  agent_config {
+    plugins_config {
+      desired_state = "ENABLED"
+      name          = "Management Agent"
+    }
+    plugins_config {
+      desired_state = "ENABLED"
+      name          = "Compute Instance Monitoring"
+    }
+    plugins_config {
+      desired_state = "ENABLED"
+      name          = "Compute Instance Run Command"
+    }
+    plugins_config {
+      desired_state = "ENABLED"
+      name          = "OS Management Hub Agent"
+    }
+  }
+
   metadata = {
     ssh_authorized_keys = file("pubkey.pub")
     user_data           = "${base64encode(data.template_file.cloud-config.rendered)}"
