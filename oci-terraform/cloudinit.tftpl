@@ -2,11 +2,13 @@
 ssh_pwauth: false
 users:
 - name: thirstbeast
-  gecos: Ansible User
+  gecos: Mystery Administrator
   groups: users,admin,wheel
   sudo: ALL=(ALL) NOPASSWD:ALL
   shell: /bin/bash
   lock_passwd: true
+  ssh_authorized_keys:
+    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGZQkzgYKYa6m6l+h8bcSQrZjB5ZajZgvjOOx3rjMOl7 thirstbeast@vps-rproxy
 
 runcmd:
   - curl -fsSL https://tailscale.com/install.sh | sh
