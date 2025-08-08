@@ -5,7 +5,7 @@ terraform {
     organization = "homelab-578"
 
     workspaces {
-      name = "vps-rproxy"
+      name = "hcp-terraform-azure-oidc"
     }
   }
   required_providers {
@@ -18,4 +18,8 @@ terraform {
 
 provider "azurerm" {
   features {}
+  use_cli = false
+
+  subscription_id = var.subscription_id
+  tenant_id       = var.tenant_id
 }
