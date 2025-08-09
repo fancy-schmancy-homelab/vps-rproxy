@@ -68,28 +68,28 @@ resource "azurerm_key_vault" "kv" {
   enabled_for_disk_encryption = true
 }
 
-# resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
-#   key_vault_id = azurerm_key_vault.kv.id
-#   tenant_id    = data.azurerm_subscription.current.tenant_id
-#   object_id    = data.azuread_service_principal.current.object_id
+resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id    = data.azurerm_subscription.current.tenant_id
+  object_id    = data.azuread_service_principal.current.object_id
 
-#   key_permissions = [
-#     "Get",
-#     "List",
-#     "Create",
-#     "Update",
-#     "Delete",
-#     "Purge",
-#     "Recover"
-#   ]
+  key_permissions = [
+    "Get",
+    "List",
+    "Create",
+    "Update",
+    "Delete",
+    "Purge",
+    "Recover"
+  ]
 
-#   secret_permissions = [
-#     "Get",
-#     "List",
-#     "Set",
-#     "Delete"
-#   ]
-# }
+  secret_permissions = [
+    "Get",
+    "List",
+    "Set",
+    "Delete"
+  ]
+}
 
 # # Terraform configuration for Azure Linux Virtual Machine
 # # This VM will be used to run the reverse proxy
