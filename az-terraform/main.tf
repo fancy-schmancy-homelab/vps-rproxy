@@ -77,7 +77,7 @@ resource "azurerm_key_vault" "kv" {
   location                    = azurerm_resource_group.kv_rg.location
   resource_group_name         = azurerm_resource_group.kv_rg.name
   tenant_id                   = data.azurerm_subscription.current.tenant_id
-  sku_name                    = "Standard"
+  sku_name                    = "standard"
   soft_delete_retention_days  = 7
   purge_protection_enabled    = true
   enabled_for_disk_encryption = true
