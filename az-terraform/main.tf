@@ -16,6 +16,11 @@ resource "azurerm_resource_group" "kv_rg" {
   location = var.location
 }
 
+resource "azurerm_resource_group" "network_rg" {
+  name     = var.resource_group_name_network
+  location = var.location
+}
+
 # resource "azurerm_container_registry" "acr" {
 #   name                = var.acr_name
 #   resource_group_name = azurerm_resource_group.acr_rg.name
@@ -24,65 +29,91 @@ resource "azurerm_resource_group" "kv_rg" {
 #   admin_enabled       = var.admin_enabled
 # }
 
+resource "azurerm_role_assignment" "network_role" {
+  scope                = azurerm_resource_group.network_rg.id
+  role_definition_name = "Network Contributor"
+  principal_id         = data.azuread_service_principal.current.object_id  # Adjust this to the appropriate object ID for your VM admin user
+  depends_on = [ azurerm_resource_group.network_rg ]
+}
+
 resource "azurerm_virtual_network" "vm_network" {
   name                = "vm-network"
   address_space       = ["10.0.0/16"]
-  location            = azurerm_resource_group.vm_rg.location
-  resource_group_name = azurerm_resource_group.vm_rg.name
+  location            = azurerm_resource_group.network_rg.location
+  resource_group_name = azurerm_resource_group.network_rg.name
+  depends_on = [ azurerm_role_assignment.network_role ]
 }
 
 resource "azurerm_subnet" "vm_subnet" {
   name                 = "vm-subnet"
-  resource_group_name  = azurerm_resource_group.vm_rg.name
+  resource_group_name  = azurerm_resource_group.network_rg.name
   virtual_network_name = azurerm_virtual_network.vm_network.name
   address_prefixes     = ["10.0.1.0/24"]
+  depends_on = [ azurerm_virtual_network.vm_network ]
 }
 
 resource "azurerm_network_interface" "vm_nic" {
   name                = "vm-nic"
-  location            = azurerm_resource_group.vm_rg.location
-  resource_group_name = azurerm_resource_group.vm_rg.name
+  location            = azurerm_resource_group.network_rg.location
+  resource_group_name = azurerm_resource_group.network_rg.name
 
   ip_configuration {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.vm_subnet.id
     private_ip_address_allocation = "Dynamic"
   }
+  depends_on = [ azurerm_subnet.vm_subnet ]
 }
 
-# resource "azurerm_key_vault" "kv" {
-#   name                        = "vps-rproxy-kv"
-#   location                    = azurerm_resource_group.kv_rg.location
-#   resource_group_name         = azurerm_resource_group.kv_rg.name
-#   tenant_id                   = var.tenant_id
-#   sku_name                    = "Standard"
-#   soft_delete_retention_days  = 7
-#   purge_protection_enabled    = true
-#   enabled_for_disk_encryption = true
+resource "azurerm_role_assignment" "kv_rg_role" {
+  scope                = azurerm_resource_group.kv_rg.id
+  role_definition_name = "Key Vault Contributor"
+  principal_id         = data.azuread_service_principal.current.object_id  # Adjust this to the appropriate object ID for your VM admin user
+  depends_on = [ azurerm_resource_group.kv_rg ]
+}
 
-#   access_policy {
-#     tenant_id = var.tenant_id
-#     object_id = var.vm_admin_username  # Adjust this to the appropriate object ID for your VM admin user
+resource "azurerm_key_vault" "kv" {
+  name                        = "vps-rproxy-kv"
+  location                    = azurerm_resource_group.kv_rg.location
+  resource_group_name         = azurerm_resource_group.kv_rg.name
+  tenant_id                   = data.azurerm_subscription.current.tenant_id
+  sku_name                    = "standard"
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = true
+  enabled_for_disk_encryption = true
+  depends_on = [ azurerm_role_assignment.kv_rg_role ]
+}
 
-#     key_permissions = [
-#       "Get",
-#       "List",
-#       "Create",
-#       "Delete",
-#       "Recover",
-#       "Purge",
-#     ]
+resource "azurerm_role_assignment" "vm_kv_role" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Data Access Administrator"
+  principal_id         = data.azuread_service_principal.current.object_id  # Adjust this to the appropriate object ID for your VM admin user
+  depends_on = [ azurerm_key_vault.kv ]
+}
 
-#     secret_permissions = [
-#       "Get",
-#       "List",
-#       "Set",
-#       "Delete",
-#       "Recover",
-#       "Purge",
-#     ]
-#   }
-# }
+resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id    = data.azurerm_subscription.current.tenant_id
+  object_id    = data.azuread_service_principal.current.object_id  # Adjust this to the appropriate object ID for your VM admin user
+  depends_on = [ azurerm_role_assignment.vm_kv_role ]
+
+  key_permissions = [
+    "Get",
+    "List",
+    "Create",
+    "Update",
+    "Delete",
+    "Purge",
+    "Recover"
+  ]
+
+  secret_permissions = [
+    "Get",
+    "List",
+    "Set",
+    "Delete"
+  ]
+}
 
 # # Terraform configuration for Azure Linux Virtual Machine
 # # This VM will be used to run the reverse proxy
