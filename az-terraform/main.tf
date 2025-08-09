@@ -1,15 +1,116 @@
 # main.tf
 # Terraform configuration for Azure Container Registry
 
-resource "azurerm_resource_group" "acr_rg" {
-  name     = var.resource_group_name
+# resource "azurerm_resource_group" "acr_rg" {
+#   name     = var.resource_group_name_acr
+#   location = var.location
+# }
+
+resource "azurerm_resource_group" "vm_rg" {
+  name     = var.resource_group_name_vm
   location = var.location
 }
 
-resource "azurerm_container_registry" "acr" {
-  name                = var.acr_name
-  resource_group_name = azurerm_resource_group.acr_rg.name
-  location            = azurerm_resource_group.acr_rg.location
-  sku                 = var.acr_sku
-  admin_enabled       = var.admin_enabled
+resource "azurerm_resource_group" "kv_rg" {
+  name     = var.resource_group_name_kv
+  location = var.location
 }
+
+# resource "azurerm_container_registry" "acr" {
+#   name                = var.acr_name
+#   resource_group_name = azurerm_resource_group.acr_rg.name
+#   location            = azurerm_resource_group.acr_rg.location
+#   sku                 = var.acr_sku
+#   admin_enabled       = var.admin_enabled
+# }
+
+resource "azurerm_virtual_network" "vm_network" {
+  name                = "vm-network"
+  address_space       = ["10.0.0/16"]
+  location            = azurerm_resource_group.vm_rg.location
+  resource_group_name = azurerm_resource_group.vm_rg.name
+}
+
+resource "azurerm_subnet" "vm_subnet" {
+  name                 = "vm-subnet"
+  resource_group_name  = azurerm_resource_group.vm_rg.name
+  virtual_network_name = azurerm_virtual_network.vm_network.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
+
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "vm-nic"
+  location            = azurerm_resource_group.vm_rg.location
+  resource_group_name = azurerm_resource_group.vm_rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.vm_subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+# resource "azurerm_key_vault" "kv" {
+#   name                        = "vps-rproxy-kv"
+#   location                    = azurerm_resource_group.kv_rg.location
+#   resource_group_name         = azurerm_resource_group.kv_rg.name
+#   tenant_id                   = var.tenant_id
+#   sku_name                    = "Standard"
+#   soft_delete_retention_days  = 7
+#   purge_protection_enabled    = true
+#   enabled_for_disk_encryption = true
+
+#   access_policy {
+#     tenant_id = var.tenant_id
+#     object_id = var.vm_admin_username  # Adjust this to the appropriate object ID for your VM admin user
+
+#     key_permissions = [
+#       "Get",
+#       "List",
+#       "Create",
+#       "Delete",
+#       "Recover",
+#       "Purge",
+#     ]
+
+#     secret_permissions = [
+#       "Get",
+#       "List",
+#       "Set",
+#       "Delete",
+#       "Recover",
+#       "Purge",
+#     ]
+#   }
+# }
+
+# # Terraform configuration for Azure Linux Virtual Machine
+# # This VM will be used to run the reverse proxy
+
+# resource "azurerm_linux_virtual_machine" "vm" {
+#   name                = "vps-rproxy-vm"
+#   resource_group_name = azurerm_resource_group.vm_rg.name
+#   location            = azurerm_resource_group.vm_rg.location
+#   size                = "Standard_B2als_v2"
+#   admin_username      = var.vm_admin_username
+
+#   network_interface_ids = [azurerm_network_interface.vm_nic.id]
+
+#   admin_ssh_key {
+#     username   = var.vm_admin_username
+#     public_key = var.admin_ssh_key  # Adjust path to your SSH public key
+#   }
+
+#   os_disk {
+#     caching              = "ReadWrite"
+#     storage_account_type = "StandardSSD_LRS"
+#     disk_size_gb         = 32
+#   }
+
+#   source_image_reference {
+#     publisher = "Canonical"
+#     offer     = "UbuntuServer"
+#     sku       = "24.04-LTS"
+#     version   = "latest"
+#   }
+# }

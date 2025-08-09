@@ -1,9 +1,9 @@
 # outputs.tf
 # Outputs for Azure Container Registry
-output "acr_login_server" {
-  description = "The login server of the Azure Container Registry."
-  value       = azurerm_container_registry.acr.login_server
-}
+# output "acr_login_server" {
+#   description = "The login server of the Azure Container Registry."
+#   value       = azurerm_container_registry.acr.login_server
+# }
 
 # output "acr_admin_username" {
 #   description = "The admin username for the Azure Container Registry."

@@ -1,7 +1,12 @@
 # variables.tf
 # Variables for Azure Container Registry
-variable "resource_group_name" {
-  description = "Name of the resource group."
+# variable "resource_group_name_acr" {
+#   description = "Name of the resource group."
+#   type        = string
+# }
+
+variable "resource_group_name_vm" {
+  description = "Name of the resource group for VMs."
   type        = string
 }
 
@@ -11,22 +16,22 @@ variable "location" {
   default     = "southcentralus"
 }
 
-variable "acr_name" {
-  description = "Name of the Azure Container Registry."
-  type        = string
-}
+# variable "acr_name" {
+#   description = "Name of the Azure Container Registry."
+#   type        = string
+# }
 
-variable "acr_sku" {
-  description = "SKU for the Azure Container Registry."
-  type        = string
-  default     = "Basic"
-}
+# variable "acr_sku" {
+#   description = "SKU for the Azure Container Registry."
+#   type        = string
+#   default     = "Basic"
+# }
 
-variable "admin_enabled" {
-  description = "Enable admin user for ACR."
-  type        = bool
-  default     = false
-}
+# variable "admin_enabled" {
+#   description = "Enable admin user for ACR."
+#   type        = bool
+#   default     = false
+# }
 
 variable "subscription_id" {
   description = "Azure Subscription ID."
@@ -35,5 +40,20 @@ variable "subscription_id" {
 
 variable "tenant_id" {
   description = "Azure Tenant ID."
+  type        = string
+}
+
+# variable "vm_admin_username" {
+#   description = "Admin username for the virtual machine."
+#   type        = string
+# }
+
+# variable "admin_ssh_key" {
+#   description = "SSH public key for the admin user."
+#   type        = string
+# }
+
+variable "resource_group_name_kv" {
+  description = "Name of the resource group for Key Vault."
   type        = string
 }
