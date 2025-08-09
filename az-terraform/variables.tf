@@ -5,8 +5,18 @@
 #   type        = string
 # }
 
+variable "resource_group_name_network" {
+  description = "Name of the resource group for networking resources."
+  type        = string
+}
+
 variable "resource_group_name_vm" {
   description = "Name of the resource group for VMs."
+  type        = string
+}
+
+variable "resource_group_name_kv" {
+  description = "Name of the resource group for Key Vault."
   type        = string
 }
 
@@ -52,8 +62,3 @@ variable "tenant_id" {
 #   description = "SSH public key for the admin user."
 #   type        = string
 # }
-
-variable "resource_group_name_kv" {
-  description = "Name of the resource group for Key Vault."
-  type        = string
-}
