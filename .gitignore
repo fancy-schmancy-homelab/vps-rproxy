@@ -35,3 +35,7 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Ignore Terraform lock file
+# This file is used to lock provider versions and ensure consistent behavior across runs.
+.terraform.lock.hcl
