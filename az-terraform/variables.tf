@@ -20,6 +20,11 @@ variable "resource_group_name_kv" {
   type        = string
 }
 
+variable "resource_group_name_disk_encryption" {
+  description = "Name of the resource group for disk encryption."
+  type        = string
+}
+
 variable "location" {
   description = "Azure region for resources."
   type        = string
