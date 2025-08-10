@@ -74,3 +74,10 @@ variable "admin_ssh_key" {
   type        = string
   sensitive   = true
 }
+
+variable "TS_AUTH_KEY" {
+  default     = null
+  description = "Tailscale auth key to use for the instance."
+  type        = string
+  sensitive   = true
+}

@@ -267,6 +267,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
+  custom_data = "${base64encode(data.template_file.cloud-config.rendered)}"  # Adjust path to your cloud-init file
+
   admin_ssh_key {
     username   = var.vm_admin_username
     public_key = var.admin_ssh_key  # Adjust path to your SSH public key
