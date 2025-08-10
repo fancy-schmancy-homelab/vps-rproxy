@@ -45,7 +45,7 @@ variable "location" {
 
 variable "allowed_ip_addresses" {
   description = "List of allowed IP addresses for Key Vault access."
-  type        = list(string)
+  type        = string
   sensitive   = true
 }
 
