@@ -1,9 +1,9 @@
 name: Digital Ocean Terraform Plan
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - 'do-terraform/**'
+  # pull_request:
+  #   paths:
+  #     - 'do-terraform/**'
 
 
 env:
