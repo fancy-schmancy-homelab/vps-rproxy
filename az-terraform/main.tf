@@ -21,6 +21,11 @@ resource "azurerm_resource_group" "network_rg" {
   location = var.location
 }
 
+resource "azurerm_resource_group" "disk_encryption_rg" {
+  name     = var.resource_group_name_disk_encryption
+  location = var.location
+}
+
 # resource "azurerm_container_registry" "acr" {
 #   name                = var.acr_name
 #   resource_group_name = azurerm_resource_group.acr_rg.name
@@ -114,33 +119,33 @@ resource "azurerm_key_vault_key" "vm_disk_encryption" {
   depends_on = [ azurerm_key_vault_access_policy.vm_kv_policy ]
 }
 
-resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
-  name                = "vm-disk-encryption-set"
-  resource_group_name = azurerm_resource_group.kv_rg.name
-  location            = azurerm_resource_group.kv_rg.location
-  key_vault_key_id    = azurerm_key_vault_key.vm_disk_encryption.id
-  identity {
-    type = "SystemAssigned"
-  }
-}
+# resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
+#   name                = "vm-disk-encryption-set"
+#   resource_group_name = azurerm_resource_group.disk_encryption_rg.name
+#   location            = azurerm_resource_group.disk_encryption_rg.location
+#   key_vault_key_id    = azurerm_key_vault_key.vm_disk_encryption.id
+#   identity {
+#     type = "SystemAssigned"
+#   }
+# }
 
-resource "azurerm_key_vault_access_policy" "vm_disk_access_policy" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = azurerm_disk_encryption_set.vm_disk_encryption.identity[0].tenant_id
-  object_id    = azurerm_disk_encryption_set.vm_disk_encryption.identity[0].principal_id
+# resource "azurerm_key_vault_access_policy" "vm_disk_access_policy" {
+#   key_vault_id = azurerm_key_vault.kv.id
+#   tenant_id    = azurerm_disk_encryption_set.vm_disk_encryption.identity[0].tenant_id
+#   object_id    = azurerm_disk_encryption_set.vm_disk_encryption.identity[0].principal_id
 
-  key_permissions = [
-    "Create",
-    "Delete",
-    "Get",
-    "Purge",
-    "Recover",
-    "Update",
-    "List",
-    "Decrypt",
-    "Sign",
-  ]
-}
+#   key_permissions = [
+#     "Create",
+#     "Delete",
+#     "Get",
+#     "Purge",
+#     "Recover",
+#     "Update",
+#     "List",
+#     "Decrypt",
+#     "Sign",
+#   ]
+# }
 
 # # Terraform configuration for Azure Linux Virtual Machine
 # # This VM will be used to run the reverse proxy
