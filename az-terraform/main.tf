@@ -134,8 +134,8 @@ resource "azurerm_key_vault_key" "vm_disk_encryption" {
 
 resource "azurerm_key_vault_access_policy" "vm_disk_access_policy" {
   key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_disk_encryption_set.vm_disk_encryption.identity.tenant_id
-  object_id    = data.azurerm_disk_encryption_set.vm_disk_encryption.identity.principal_id
+  tenant_id    = data.azurerm_disk_encryption_set.vm_disk_encryption.identity[0].tenant_id
+  object_id    = data.azurerm_disk_encryption_set.vm_disk_encryption.identity[0].principal_id
 
   key_permissions = [
     "Create",
