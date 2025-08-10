@@ -53,9 +53,10 @@ resource "azurerm_network_security_rule" "allow_ssh" {
   direction                  = "Inbound"
   access                     = "Allow"
   protocol                   = "Tcp"
+  source_address_prefixes    = var.allowed_ip_addresses
+  source_port_range          = "*"
   destination_port_range     = "22"
   destination_address_prefix = "*"
-  source_address_prefixes    = var.allowed_ip_addresses
   resource_group_name         = azurerm_resource_group.network_rg.name
   network_security_group_name = azurerm_network_security_group.vm_nsg.name
 }
@@ -67,6 +68,8 @@ resource "azurerm_network_security_rule" "allow_icmp" {
   access                      = "Allow"
   protocol                    = "Icmp"
   source_address_prefix       = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.network_rg.name
   network_security_group_name = azurerm_network_security_group.vm_nsg.name
@@ -101,7 +104,7 @@ resource "azurerm_network_security_rule" "allow_https_udp" {
 }
 
 resource "azurerm_network_security_rule" "drop_traffic" {
-  name                       = "Drop All Other Traffic"
+  name                       = "Drop-All-Traffic"
   priority                   = 4000
   direction                  = "Inbound"
   access                     = "Deny"
@@ -143,7 +146,7 @@ resource "azurerm_public_ip" "vm_public_ip" {
   resource_group_name = azurerm_resource_group.network_rg.name
   allocation_method   = "Dynamic"
 
-  domain_name_label   = "${random_string.random.result}" # Ensure this is unique across Azure
+  domain_name_label   = "a${random_string.random.result}" # Ensure this is unique across Azure
 }
 
 
