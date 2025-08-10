@@ -43,6 +43,12 @@ variable "location" {
 #   default     = false
 # }
 
+variable "allowed_ip_addresses" {
+  description = "List of allowed IP addresses for Key Vault access."
+  type        = list(string)
+  default     = []
+}
+
 variable "subscription_id" {
   description = "Azure Subscription ID."
   type        = string
