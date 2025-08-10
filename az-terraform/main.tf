@@ -42,6 +42,7 @@ resource "azurerm_subnet" "vm_subnet" {
   virtual_network_name = azurerm_virtual_network.vm_network.name
   address_prefixes     = ["10.0.1.0/24"]
   depends_on = [ azurerm_virtual_network.vm_network ]
+  service_endpoints = ["Microsoft.KeyVault"]
 }
 
 resource "azurerm_network_interface" "vm_nic" {
@@ -84,13 +85,16 @@ resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
   object_id    = data.azuread_service_principal.current.object_id
 
   key_permissions = [
-    "Get",
-    "List",
     "Create",
-    "Update",
     "Delete",
+    "Get",
     "Purge",
-    "Recover"
+    "Recover",
+    "Update",
+    "List",
+    "Decrypt",
+    "Sign",
+    "GetRotationPolicy",
   ]
 
   secret_permissions = [
@@ -98,6 +102,43 @@ resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
     "List",
     "Set",
     "Delete"
+  ]
+}
+
+resource "azurerm_key_vault_key" "vm_disk_encryption" {
+  name         = "vm-disk-encryption-key"
+  key_vault_id = azurerm_key_vault.kv.id
+  key_type     = "RSA"
+  key_size     = 4096
+  key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
+  depends_on = [ azurerm_key_vault_access_policy.vm_kv_policy ]
+}
+
+resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
+  name                = "vm-disk-encryption-set"
+  resource_group_name = azurerm_resource_group.kv_rg.name
+  location            = azurerm_resource_group.kv_rg.location
+  key_vault_key_id    = azurerm_key_vault_key.vm_disk_encryption.id
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+resource "azurerm_key_vault_access_policy" "vm_disk_access_policy" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id    = azurerm_disk_encryption_set.vm_disk_encryption.identity[0].tenant_id
+  object_id    = azurerm_disk_encryption_set.vm_disk_encryption.identity[0].principal_id
+
+  key_permissions = [
+    "Create",
+    "Delete",
+    "Get",
+    "Purge",
+    "Recover",
+    "Update",
+    "List",
+    "Decrypt",
+    "Sign",
   ]
 }
 
@@ -122,6 +163,7 @@ resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
 #     caching              = "ReadWrite"
 #     storage_account_type = "StandardSSD_LRS"
 #     disk_size_gb         = 32
+#     disk_encryption_set_id = # azurerm_disk_encryption_set.vm_disk_encryption.id
 #   }
 
 #   source_image_reference {
