@@ -123,7 +123,7 @@ resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
   name                = "vm-disk-encryption-set"
   resource_group_name = azurerm_resource_group.disk_encryption_rg.name
   location            = azurerm_resource_group.disk_encryption_rg.location
-  key_vault_key_id    = azurerm_key_vault_key.vm_disk_encryption.id
+  key_vault_key_id    = azurerm_key_vault_key.vm_disk_encryption.resource_versionless_id
 
   auto_key_rotation_enabled = true
 
