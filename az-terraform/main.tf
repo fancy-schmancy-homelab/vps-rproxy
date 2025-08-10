@@ -144,7 +144,7 @@ resource "azurerm_public_ip" "vm_public_ip" {
   name                = "vps-rproxy-public-ip"
   location            = azurerm_resource_group.network_rg.location
   resource_group_name = azurerm_resource_group.network_rg.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 
   domain_name_label   = "a${random_string.random.result}" # Ensure this is unique across Azure
 }
