@@ -67,4 +67,5 @@ variable "tenant_id" {
 # variable "admin_ssh_key" {
 #   description = "SSH public key for the admin user."
 #   type        = string
+#   sensitive   = true
 # }
