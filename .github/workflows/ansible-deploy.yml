@@ -8,7 +8,7 @@ on:
       branches:
             - main
     workflow_run:
-      workflows: ["Oracle Cloud Terraform Apply","Digital Ocean Terraform Apply"]
+      workflows: ["Oracle Cloud Terraform Apply","Digital Ocean Terraform Apply","Azure Terraform Apply"]
       types:
           - completed
 
