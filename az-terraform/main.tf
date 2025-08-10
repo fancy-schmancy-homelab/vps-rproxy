@@ -76,7 +76,7 @@ resource "azurerm_key_vault" "kv" {
   #   virtual_network_subnet_ids = [
   #     azurerm_subnet.vm_subnet.id
   #   ]
-  }
+  # }
 }
 
 resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
