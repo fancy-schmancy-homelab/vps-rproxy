@@ -147,6 +147,8 @@ resource "azurerm_key_vault_access_policy" "vm_disk_access_policy" {
     "List",
     "Decrypt",
     "Sign",
+    "UnwrapKey",
+    "WrapKey"
   ]
 }
 
