@@ -45,50 +45,60 @@ resource "azurerm_network_security_group" "vm_nsg" {
   name                = "vm-nsg"
   location            = azurerm_resource_group.network_rg.location
   resource_group_name = azurerm_resource_group.network_rg.name
+}
 
-  security_rule {
-    name                       = "AllowSSH"
-    priority                   = 1000
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    destination_port_range     = "22"
-    source_address_prefixes    = var.allowed_ip_addresses
-  }
+resource "azurerm_network_security_rule" "allow_ssh" {
+  name                       = "AllowSSH"
+  priority                   = 1000
+  direction                  = "Inbound"
+  access                     = "Allow"
+  protocol                   = "Tcp"
+  destination_port_range     = "22"
+  source_address_prefixes    = var.allowed_ip_addresses
+  resource_group_name         = azurerm_resource_group.network_rg.name
+  network_security_group_name = azurerm_network_security_group.vm_nsg.name
+}
 
-  security_rule {
-    name                       = "AllowICMP"
-    priority                   = 1010
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Icmp"
-  }
+resource "azurerm_network_security_rule" "allow_icmp" {
+  name                       = "AllowICMP"
+  priority                   = 1010
+  direction                  = "Inbound"
+  access                     = "Allow"
+  protocol                   = "Icmp"
+  resource_group_name         = azurerm_resource_group.network_rg.name
+  network_security_group_name = azurerm_network_security_group.vm_nsg.name
+}
 
-  security_rule {
-    name                       = "AllowHTTPS"
-    priority                   = 1020
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    destination_port_range     = "443"
-  }
+resource "azurerm_network_security_rule" "allow_https" {
+  name                       = "AllowHTTPS"
+  priority                   = 1020
+  direction                  = "Inbound"
+  access                     = "Allow"
+  protocol                   = "Tcp"
+  destination_port_range     = "443"
+  resource_group_name         = azurerm_resource_group.network_rg.name
+  network_security_group_name = azurerm_network_security_group.vm_nsg.name
+}
 
-  security_rule {
-    name                       = "AllowHTTPS-UDP"
-    priority                   = 1030
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Udp"
-    destination_port_range     = "443"
-  }
+resource "azurerm_network_security_rule" "allow_https_udp" {
+  name                       = "AllowHTTPS-UDP"
+  priority                   = 1030
+  direction                  = "Inbound"
+  access                     = "Allow"
+  protocol                   = "Udp"
+  destination_port_range     = "443"
+  resource_group_name         = azurerm_resource_group.network_rg.name
+  network_security_group_name = azurerm_network_security_group.vm_nsg.name
+}
 
-  security_rule = {
-    name                       = "Drop All Other Traffic"
-    priority                   = 4000
-    direction                  = "Inbound"
-    access                     = "Deny"
-    protocol                   = "*"
-  }
+resource "azurerm_network_security_rule" "drop_traffic" {
+  name                       = "Drop All Other Traffic"
+  priority                   = 4000
+  direction                  = "Inbound"
+  access                     = "Deny"
+  protocol                   = "*"
+  resource_group_name         = azurerm_resource_group.network_rg.name
+  network_security_group_name = azurerm_network_security_group.vm_nsg.name
 }
 
 resource "azurerm_subnet" "vm_subnet" {
