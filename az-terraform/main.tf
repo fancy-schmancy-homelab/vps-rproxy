@@ -298,10 +298,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
 }
 
 resource "azurerm_virtual_machine_extension" "vm_extension" {
-  name                 = "AzurePolicyforWindows"
+  name                 = "AzurePolicyforLinux"
   virtual_machine_id   = azurerm_linux_virtual_machine.vm.id
   publisher            = "Microsoft.GuestConfiguration"
-  type                 = "ConfigurationforWindows"
-  type_handler_version = "1.29"
+  type                 = "ConfigurationForLinux"
+  type_handler_version = "1.0"
   auto_upgrade_minor_version = "true"
 }
