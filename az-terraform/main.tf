@@ -297,7 +297,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
-resource "azurerm_linux_virtual_machine_extension" "vm_extension" {
+resource "azurerm_virtual_machine_extension" "vm_extension" {
   name                 = "AzurePolicyforWindows"
   virtual_machine_id   = azurerm_linux_virtual_machine.vm.id
   publisher            = "Microsoft.GuestConfiguration"
