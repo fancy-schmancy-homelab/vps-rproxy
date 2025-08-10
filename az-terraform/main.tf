@@ -264,6 +264,14 @@ resource "azurerm_linux_virtual_machine" "vm" {
   size                = "Standard_B2als_v2"
   admin_username      = var.vm_admin_username
   encryption_at_host_enabled = true
+  vtpm_enabled = true
+  secure_boot_enabled = true
+
+  provision_vm_agent = true
+  allow_extension_operations = true
+  reboot_setting = "Always"
+  patch_assessment_mode = "AutomaticByPlatform"
+  patch_mode = "AutomaticByPlatform"
 
   network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
@@ -287,4 +295,13 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "server"
     version   = "latest"
   }
+}
+
+resource "azurerm_virtual_machine_extension" "vm_extension" {
+  name                 = "AzurePolicyforWindows"
+  virtual_machine_id   = azurerm_linux_virtual_machine.vm.id
+  publisher            = "Microsoft.GuestConfiguration"
+  type                 = "ConfigurationforWindows"
+  type_handler_version = "1.29"
+  auto_upgrade_minor_version = "true"
 }

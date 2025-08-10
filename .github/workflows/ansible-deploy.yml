@@ -8,7 +8,7 @@ on:
       branches:
             - main
     workflow_run:
-      workflows: ["Oracle Cloud Terraform Apply","Digital Ocean Terraform Apply"]
+      workflows: ["Oracle Cloud Terraform Apply","Digital Ocean Terraform Apply","Azure Terraform Apply"]
       types:
           - completed
 
@@ -32,7 +32,7 @@ jobs:
                 oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
                 oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
                 tags: "tag:github"
-                version: 1.84.0
+                version: 1.86.2
             
             - name: Ansible Playbook
               run: |
