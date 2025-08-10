@@ -1,9 +1,9 @@
 name: Oracle Cloud Terraform Plan
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - 'oci-terraform/**'
+  # pull_request:
+  #   paths:
+  #     - 'oci-terraform/**'
 
 
 env:
