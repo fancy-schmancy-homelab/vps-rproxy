@@ -159,6 +159,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   location            = azurerm_resource_group.vm_rg.location
   size                = "Standard_B2als_v2"
   admin_username      = var.vm_admin_username
+  encryption_at_host_enabled = true
 
   network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
