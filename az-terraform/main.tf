@@ -147,37 +147,40 @@ resource "azurerm_key_vault_access_policy" "vm_disk_access_policy" {
     "List",
     "Decrypt",
     "Sign",
+    "UnwrapKey",
+    "WrapKey"
   ]
 }
 
 # # Terraform configuration for Azure Linux Virtual Machine
 # # This VM will be used to run the reverse proxy
 
-# resource "azurerm_linux_virtual_machine" "vm" {
-#   name                = "vps-rproxy-vm"
-#   resource_group_name = azurerm_resource_group.vm_rg.name
-#   location            = azurerm_resource_group.vm_rg.location
-#   size                = "Standard_B2als_v2"
-#   admin_username      = var.vm_admin_username
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                = "vps-rproxy-vm"
+  resource_group_name = azurerm_resource_group.vm_rg.name
+  location            = azurerm_resource_group.vm_rg.location
+  size                = "Standard_B2als_v2"
+  admin_username      = var.vm_admin_username
+  encryption_at_host_enabled = true
 
-#   network_interface_ids = [azurerm_network_interface.vm_nic.id]
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
-#   admin_ssh_key {
-#     username   = var.vm_admin_username
-#     public_key = var.admin_ssh_key  # Adjust path to your SSH public key
-#   }
+  admin_ssh_key {
+    username   = var.vm_admin_username
+    public_key = var.admin_ssh_key  # Adjust path to your SSH public key
+  }
 
-#   os_disk {
-#     caching              = "ReadWrite"
-#     storage_account_type = "StandardSSD_LRS"
-#     disk_size_gb         = 32
-#     disk_encryption_set_id = # azurerm_disk_encryption_set.vm_disk_encryption.id
-#   }
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "StandardSSD_LRS"
+    disk_size_gb         = 32
+    disk_encryption_set_id = data.azurerm_disk_encryption_set.vm_disk_encryption.id
+  }
 
-#   source_image_reference {
-#     publisher = "Canonical"
-#     offer     = "UbuntuServer"
-#     sku       = "24.04-LTS"
-#     version   = "latest"
-#   }
-# }
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "24.04-LTS"
+    version   = "latest"
+  }
+}
