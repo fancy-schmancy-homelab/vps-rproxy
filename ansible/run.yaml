@@ -1,5 +1,5 @@
 ---
-  - hosts: shamb0:vps-rproxy-vm
+  - hosts: vps-rproxy-vm
     vars:
       cloudflare_api_token: "{{ lookup('env', 'CF_TOKEN') }}"
     roles:
