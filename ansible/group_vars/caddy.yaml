@@ -22,3 +22,8 @@ caddy_endpoints:
     upstream: "truenas-scale:30067"
     tls_insecure: false
     tls_provider: cloudflare
+  - friendly_name: pocket-id
+    fqdn: oidc.amireally.online
+    upstream: "truenas-scale:30218"
+    tls_insecure: false
+    tls_provider: cloudflare
