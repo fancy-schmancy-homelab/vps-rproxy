@@ -103,19 +103,33 @@ resource "azurerm_network_security_rule" "allow_https_udp" {
   network_security_group_name = azurerm_network_security_group.vm_nsg.name
 }
 
-resource "azurerm_network_security_rule" "drop_traffic" {
-  name                       = "Drop-All-Traffic"
-  priority                   = 4000
+resource "azurerm_network_security_rule" "allow_tailscale_udp" {
+  name                       = "AllowTailscale-UDP"
+  priority                   = 1040
   direction                  = "Inbound"
-  access                     = "Deny"
-  protocol                   = "*"
+  access                     = "Allow"
+  protocol                   = "Udp"
   source_address_prefix      = "*"
   source_port_range          = "*"
-  destination_port_range     = "*"
+  destination_port_range     = "41641"
   destination_address_prefix = "*"
   resource_group_name         = azurerm_resource_group.network_rg.name
   network_security_group_name = azurerm_network_security_group.vm_nsg.name
 }
+
+# resource "azurerm_network_security_rule" "drop_traffic" {
+#   name                       = "Drop-All-Traffic"
+#   priority                   = 4000
+#   direction                  = "Inbound"
+#   access                     = "Deny"
+#   protocol                   = "*"
+#   source_address_prefix      = "*"
+#   source_port_range          = "*"
+#   destination_port_range     = "*"
+#   destination_address_prefix = "*"
+#   resource_group_name         = azurerm_resource_group.network_rg.name
+#   network_security_group_name = azurerm_network_security_group.vm_nsg.name
+# }
 
 resource "azurerm_subnet" "vm_subnet" {
   name                 = "vm-subnet"
