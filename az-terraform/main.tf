@@ -36,7 +36,7 @@ resource "azurerm_resource_group" "disk_encryption_rg" {
 
 resource "azurerm_virtual_network" "vm_network" {
   name                = "vm-network"
-  address_space       = ["10.0.0.0/16"]
+  address_space       = ["10.0.0.0/16", "2404:f800:8000:122::/63"]
   location            = azurerm_resource_group.network_rg.location
   resource_group_name = azurerm_resource_group.network_rg.name
 }
@@ -135,7 +135,7 @@ resource "azurerm_subnet" "vm_subnet" {
   name                 = "vm-subnet"
   resource_group_name  = azurerm_resource_group.network_rg.name
   virtual_network_name = azurerm_virtual_network.vm_network.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = ["10.0.1.0/24", "2404:f800:8000:122::/64"]
   depends_on = [ azurerm_virtual_network.vm_network ]
   service_endpoints = ["Microsoft.KeyVault"]
 }
@@ -163,6 +163,16 @@ resource "azurerm_public_ip" "vm_public_ip" {
   domain_name_label   = "a${random_string.random.result}" # Ensure this is unique across Azure
 }
 
+resource "azurerm_public_ip" "vm_public_ipv6" {
+  name                = "vps-rproxy-public-ipv6"
+  location            = azurerm_resource_group.network_rg.location
+  resource_group_name = azurerm_resource_group.network_rg.name
+  allocation_method   = "Static"
+
+  domain_name_label   = "a6${random_string.random.result}" # Ensure this is unique across Azure
+  ip_version         = "IPv6"
+}
+
 
 resource "azurerm_network_interface" "vm_nic" {
   name                = "vm-nic"
@@ -175,7 +185,15 @@ resource "azurerm_network_interface" "vm_nic" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.vm_public_ip.id
   }
-  depends_on = [ azurerm_subnet.vm_subnet, azurerm_public_ip.vm_public_ip ]
+
+  ip_configuration {
+    name                          = "internal-ipv6"
+    subnet_id                     = azurerm_subnet.vm_subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.vm_public_ipv6.id
+    private_ip_address_version    = "IPv6"
+  }
+  depends_on = [ azurerm_subnet.vm_subnet, azurerm_public_ip.vm_public_ip, azurerm_public_ip.vm_public_ipv6 ]
 }
 
 
