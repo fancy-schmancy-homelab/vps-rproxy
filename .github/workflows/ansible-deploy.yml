@@ -28,7 +28,7 @@ jobs:
                 ANSIBLE_CONFIG: ./ansible/ansible.cfg
 
             - name: Connect Tailscale
-              uses: tailscale/github-action@v3
+              uses: tailscale/github-action@v4
               with:
                 oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
                 oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
