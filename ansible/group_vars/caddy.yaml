@@ -27,3 +27,8 @@ caddy_endpoints:
     upstream: "truenas-scale:30218"
     tls_insecure: false
     tls_provider: cloudflare
+  - friendly_name: pinepods
+    fqdn: pods.amireally.online
+    upstream: "docker:8040"
+    tls_insecure: false
+    tls_provider: cloudflare
