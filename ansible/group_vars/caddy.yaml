@@ -12,11 +12,6 @@ caddy_endpoints:
     upstream: "truenas-scale:8096"
     tls_insecure: false
     tls_provider: cloudflare
-  - friendly_name: auth
-    fqdn: auth.amireally.online
-    upstream: "https://truenas-scale:30141"
-    tls_insecure: true
-    tls_provider: cloudflare
   - friendly_name: abs
     fqdn: abs.amireally.online
     upstream: "truenas-scale:30067"
@@ -25,10 +20,5 @@ caddy_endpoints:
   - friendly_name: pocket-id
     fqdn: oidc.amireally.online
     upstream: "truenas-scale:30218"
-    tls_insecure: false
-    tls_provider: cloudflare
-  - friendly_name: pinepods
-    fqdn: pods.amireally.online
-    upstream: "docker:8040"
     tls_insecure: false
     tls_provider: cloudflare
