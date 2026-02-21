@@ -1,11 +1,3 @@
-# main.tf
-# Terraform configuration for Azure Container Registry
-
-# resource "azurerm_resource_group" "acr_rg" {
-#   name     = var.resource_group_name_acr
-#   location = var.location
-# }
-
 resource "azurerm_resource_group" "vm_rg" {
   name     = var.resource_group_name_vm
   location = var.location
@@ -26,25 +18,19 @@ resource "azurerm_resource_group" "disk_encryption_rg" {
   location = var.location
 }
 
-# resource "azurerm_container_registry" "acr" {
-#   name                = var.acr_name
-#   resource_group_name = azurerm_resource_group.acr_rg.name
-#   location            = azurerm_resource_group.acr_rg.location
-#   sku                 = var.acr_sku
-#   admin_enabled       = var.admin_enabled
-# }
-
 resource "azurerm_virtual_network" "vm_network" {
   name                = "vm-network"
   address_space       = ["10.0.0.0/16", "2404:f800:8000:122::/63"]
   location            = azurerm_resource_group.network_rg.location
   resource_group_name = azurerm_resource_group.network_rg.name
+  depends_on          = [azurerm_resource_group.network_rg]
 }
 
 resource "azurerm_network_security_group" "vm_nsg" {
   name                = "vm-nsg"
   location            = azurerm_resource_group.network_rg.location
   resource_group_name = azurerm_resource_group.network_rg.name
+  depends_on          = [azurerm_resource_group.network_rg]
 }
 
 # resource "azurerm_network_security_rule" "allow_ssh" {
@@ -73,48 +59,52 @@ resource "azurerm_network_security_rule" "allow_icmp" {
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.network_rg.name
   network_security_group_name = azurerm_network_security_group.vm_nsg.name
+  depends_on                  = [azurerm_network_security_group.vm_nsg]
 }
 
 resource "azurerm_network_security_rule" "allow_https" {
-  name                       = "AllowHTTPS"
-  priority                   = 1020
-  direction                  = "Inbound"
-  access                     = "Allow"
-  protocol                   = "Tcp"
-  source_address_prefix      = "*"
-  source_port_range          = "*"
-  destination_port_range     = "443"
-  destination_address_prefix = "*"
+  name                        = "AllowHTTPS"
+  priority                    = 1020
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_address_prefix       = "*"
+  source_port_range           = "*"
+  destination_port_range      = "443"
+  destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.network_rg.name
   network_security_group_name = azurerm_network_security_group.vm_nsg.name
+  depends_on                  = [azurerm_network_security_group.vm_nsg]
 }
 
 resource "azurerm_network_security_rule" "allow_https_udp" {
-  name                       = "AllowHTTPS-UDP"
-  priority                   = 1030
-  direction                  = "Inbound"
-  access                     = "Allow"
-  protocol                   = "Udp"
-  source_address_prefix      = "*"
-  source_port_range          = "*"
-  destination_port_range     = "443"
-  destination_address_prefix = "*"
+  name                        = "AllowHTTPS-UDP"
+  priority                    = 1030
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Udp"
+  source_address_prefix       = "*"
+  source_port_range           = "*"
+  destination_port_range      = "443"
+  destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.network_rg.name
   network_security_group_name = azurerm_network_security_group.vm_nsg.name
+  depends_on                  = [azurerm_network_security_group.vm_nsg]
 }
 
 resource "azurerm_network_security_rule" "allow_tailscale_udp" {
-  name                       = "AllowTailscale-UDP"
-  priority                   = 1040
-  direction                  = "Inbound"
-  access                     = "Allow"
-  protocol                   = "Udp"
-  source_address_prefix      = "*"
-  source_port_range          = "*"
-  destination_port_range     = "41641"
-  destination_address_prefix = "*"
+  name                        = "AllowTailscale-UDP"
+  priority                    = 1040
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Udp"
+  source_address_prefix       = "*"
+  source_port_range           = "*"
+  destination_port_range      = "41641"
+  destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.network_rg.name
   network_security_group_name = azurerm_network_security_group.vm_nsg.name
+  depends_on                  = [azurerm_network_security_group.vm_nsg]
 }
 
 # resource "azurerm_network_security_rule" "drop_traffic" {
@@ -136,14 +126,14 @@ resource "azurerm_subnet" "vm_subnet" {
   resource_group_name  = azurerm_resource_group.network_rg.name
   virtual_network_name = azurerm_virtual_network.vm_network.name
   address_prefixes     = ["10.0.1.0/24", "2404:f800:8000:122::/64"]
-  depends_on = [ azurerm_virtual_network.vm_network ]
-  service_endpoints = ["Microsoft.KeyVault"]
+  depends_on           = [azurerm_virtual_network.vm_network]
+  service_endpoints    = ["Microsoft.KeyVault"]
 }
 
 resource "azurerm_subnet_network_security_group_association" "vm_subnet_nsg" {
   subnet_id                 = azurerm_subnet.vm_subnet.id
   network_security_group_id = azurerm_network_security_group.vm_nsg.id
-  depends_on = [ azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet ]
+  depends_on                = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
 }
 
 resource "random_string" "random" {
@@ -160,7 +150,8 @@ resource "azurerm_public_ip" "vm_public_ip" {
   resource_group_name = azurerm_resource_group.network_rg.name
   allocation_method   = "Static"
 
-  domain_name_label   = "a${random_string.random.result}" # Ensure this is unique across Azure
+  domain_name_label = "a${random_string.random.result}" # Ensure this is unique across Azure
+  depends_on        = [azurerm_resource_group.network_rg]
 }
 
 resource "azurerm_public_ip" "vm_public_ipv6" {
@@ -169,8 +160,9 @@ resource "azurerm_public_ip" "vm_public_ipv6" {
   resource_group_name = azurerm_resource_group.network_rg.name
   allocation_method   = "Static"
 
-  domain_name_label   = "a6${random_string.random.result}" # Ensure this is unique across Azure
-  ip_version         = "IPv6"
+  domain_name_label = "a6${random_string.random.result}" # Ensure this is unique across Azure
+  ip_version        = "IPv6"
+  depends_on        = [azurerm_resource_group.network_rg]
 }
 
 
@@ -193,21 +185,23 @@ resource "azurerm_network_interface" "vm_nic" {
     public_ip_address_id          = azurerm_public_ip.vm_public_ipv6.id
     private_ip_address_version    = "IPv6"
   }
-  depends_on = [ azurerm_subnet.vm_subnet, azurerm_public_ip.vm_public_ip, azurerm_public_ip.vm_public_ipv6 ]
+  depends_on = [azurerm_subnet.vm_subnet, azurerm_public_ip.vm_public_ip, azurerm_public_ip.vm_public_ipv6]
 }
 
 
 resource "azurerm_key_vault" "kv" {
-  name                        = "vps-rproxy-kv"
-  location                    = azurerm_resource_group.kv_rg.location
-  resource_group_name         = azurerm_resource_group.kv_rg.name
-  tenant_id                   = data.azurerm_subscription.current.tenant_id
-  sku_name                    = "standard"
-  soft_delete_retention_days  = 7
-  purge_protection_enabled    = true
-  enabled_for_disk_encryption = true
-  enabled_for_deployment      = true
+  name                          = "vps-rproxy-kv"
+  depends_on                    = [azurerm_resource_group.kv_rg]
+  location                      = azurerm_resource_group.kv_rg.location
+  resource_group_name           = azurerm_resource_group.kv_rg.name
+  tenant_id                     = data.azurerm_subscription.current.tenant_id
+  sku_name                      = "standard"
+  soft_delete_retention_days    = 7
+  purge_protection_enabled      = true
+  enabled_for_disk_encryption   = true
+  enabled_for_deployment        = true
   public_network_access_enabled = true
+  rbac_authorization_enabled    = true
   # network_acls {
   #   default_action = "Deny"
   #   bypass         = "AzureServices"
@@ -216,6 +210,12 @@ resource "azurerm_key_vault" "kv" {
   #     azurerm_subnet.vm_subnet.id
   #   ]
   # }
+}
+
+resource "azurerm_role_assignment" "service_principal_kv_access" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = data.azuread_service_principal.current.object_id
 }
 
 # resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
@@ -244,27 +244,28 @@ resource "azurerm_key_vault" "kv" {
 #   ]
 # }
 
-# resource "azurerm_key_vault_key" "vm_disk_encryption" {
-#   name         = "vm-disk-encryption-key"
-#   key_vault_id = azurerm_key_vault.kv.id
-#   key_type     = "RSA"
-#   key_size     = 4096
-#   key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
-#   depends_on = [ azurerm_key_vault_access_policy.vm_kv_policy ]
-# }
+resource "azurerm_key_vault_key" "vm_disk_encryption" {
+  name         = "vm-disk-encryption-key-1"
+  key_vault_id = azurerm_key_vault.kv.id
+  key_type     = "RSA"
+  key_size     = 4096
+  key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
+  depends_on = [ azurerm_key_vault.kv, azurerm_role_assignment.service_principal_kv_access ]
+}
 
-# # resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
-# #   name                = "vm-disk-encryption-set"
-# #   resource_group_name = azurerm_resource_group.disk_encryption_rg.name
-# #   location            = azurerm_resource_group.disk_encryption_rg.location
-# #   key_vault_key_id    = azurerm_key_vault_key.vm_disk_encryption.versionless_id
+resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
+  name                = "vm-disk-encryption-set-1"
+  resource_group_name = azurerm_resource_group.disk_encryption_rg.name
+  location            = azurerm_resource_group.disk_encryption_rg.location
+  key_vault_key_id    = azurerm_key_vault_key.vm_disk_encryption.versionless_id
 
-# #   auto_key_rotation_enabled = true
+  auto_key_rotation_enabled = true
 
-# #   identity {
-# #     type = "SystemAssigned"
-# #   }
-# # }
+  identity {
+    type = "SystemAssigned"
+  }
+  depends_on = [ azurerm_key_vault_key.vm_disk_encryption ]
+}
 
 # resource "azurerm_key_vault_access_policy" "vm_disk_access_policy" {
 #   key_vault_id = azurerm_key_vault.kv.id
