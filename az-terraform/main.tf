@@ -261,12 +261,6 @@ resource "azurerm_linux_virtual_machine" "vm" {
   vtpm_enabled = true
   secure_boot_enabled = true
 
-  provision_vm_agent = true
-  allow_extension_operations = true
-  reboot_setting = "Always"
-  patch_assessment_mode = "AutomaticByPlatform"
-  patch_mode = "AutomaticByPlatform"
-
   network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
   custom_data = "${base64encode(data.template_file.cloud-config.rendered)}"  # Adjust path to your cloud-init file
