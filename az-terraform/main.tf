@@ -218,32 +218,6 @@ resource "azurerm_role_assignment" "service_principal_kv_access" {
   principal_id         = data.azuread_service_principal.current.object_id
 }
 
-# resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
-#   key_vault_id = azurerm_key_vault.kv.id
-#   tenant_id    = data.azurerm_subscription.current.tenant_id
-#   object_id    = data.azuread_service_principal.current.object_id
-
-#   key_permissions = [
-#     "Create",
-#     "Delete",
-#     "Get",
-#     "Purge",
-#     "Recover",
-#     "Update",
-#     "List",
-#     "Decrypt",
-#     "Sign",
-#     "GetRotationPolicy",
-#   ]
-
-#   secret_permissions = [
-#     "Get",
-#     "List",
-#     "Set",
-#     "Delete"
-#   ]
-# }
-
 resource "azurerm_key_vault_key" "vm_disk_encryption" {
   name         = "vm-disk-encryption-key-1"
   key_vault_id = azurerm_key_vault.kv.id
@@ -267,25 +241,12 @@ resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
   depends_on = [ azurerm_key_vault_key.vm_disk_encryption ]
 }
 
-# resource "azurerm_key_vault_access_policy" "vm_disk_access_policy" {
-#   key_vault_id = azurerm_key_vault.kv.id
-#   tenant_id    = data.azurerm_disk_encryption_set.vm_disk_encryption.identity[0].tenant_id
-#   object_id    = data.azurerm_disk_encryption_set.vm_disk_encryption.identity[0].principal_id
-
-#   key_permissions = [
-#     "Create",
-#     "Delete",
-#     "Get",
-#     "Purge",
-#     "Recover",
-#     "Update",
-#     "List",
-#     "Decrypt",
-#     "Sign",
-#     "UnwrapKey",
-#     "WrapKey"
-#   ]
-# }
+resource "azurerm_role_assignment" "disk_encryption_set_kv_access" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Crypto Service Encryption User"
+  principal_id         = azurerm_disk_encryption_set.vm_disk_encryption.identity[0].principal_id
+  depends_on           = [ azurerm_key_vault.kv, azurerm_disk_encryption_set.vm_disk_encryption ]
+}
 
 # # # Terraform configuration for Azure Linux Virtual Machine
 # # # This VM will be used to run the reverse proxy
@@ -328,13 +289,4 @@ resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
 #     sku       = "server"
 #     version   = "latest"
 #   }
-# }
-
-# resource "azurerm_virtual_machine_extension" "vm_extension" {
-#   name                 = "AzurePolicyforLinux"
-#   virtual_machine_id   = azurerm_linux_virtual_machine.vm.id
-#   publisher            = "Microsoft.GuestConfiguration"
-#   type                 = "ConfigurationForLinux"
-#   type_handler_version = "1.0"
-#   auto_upgrade_minor_version = "true"
 # }
