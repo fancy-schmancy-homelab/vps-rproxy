@@ -1,9 +1,4 @@
 # variables.tf
-# Variables for Azure Container Registry
-# variable "resource_group_name_acr" {
-#   description = "Name of the resource group."
-#   type        = string
-# }
 
 variable "resource_group_name_network" {
   description = "Name of the resource group for networking resources."
