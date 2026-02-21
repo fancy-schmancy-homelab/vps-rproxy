@@ -201,7 +201,7 @@ resource "azurerm_key_vault" "kv" {
   enabled_for_disk_encryption   = true
   enabled_for_deployment        = true
   public_network_access_enabled = true
-  enable_rbac_authorization     = true
+  rbac_authorization_enabled    = true
   # network_acls {
   #   default_action = "Deny"
   #   bypass         = "AzureServices"
