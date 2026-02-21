@@ -218,122 +218,122 @@ resource "azurerm_key_vault" "kv" {
   # }
 }
 
-resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_subscription.current.tenant_id
-  object_id    = data.azuread_service_principal.current.object_id
+# resource "azurerm_key_vault_access_policy" "vm_kv_policy" {
+#   key_vault_id = azurerm_key_vault.kv.id
+#   tenant_id    = data.azurerm_subscription.current.tenant_id
+#   object_id    = data.azuread_service_principal.current.object_id
 
-  key_permissions = [
-    "Create",
-    "Delete",
-    "Get",
-    "Purge",
-    "Recover",
-    "Update",
-    "List",
-    "Decrypt",
-    "Sign",
-    "GetRotationPolicy",
-  ]
+#   key_permissions = [
+#     "Create",
+#     "Delete",
+#     "Get",
+#     "Purge",
+#     "Recover",
+#     "Update",
+#     "List",
+#     "Decrypt",
+#     "Sign",
+#     "GetRotationPolicy",
+#   ]
 
-  secret_permissions = [
-    "Get",
-    "List",
-    "Set",
-    "Delete"
-  ]
-}
+#   secret_permissions = [
+#     "Get",
+#     "List",
+#     "Set",
+#     "Delete"
+#   ]
+# }
 
-resource "azurerm_key_vault_key" "vm_disk_encryption" {
-  name         = "vm-disk-encryption-key"
-  key_vault_id = azurerm_key_vault.kv.id
-  key_type     = "RSA"
-  key_size     = 4096
-  key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
-  depends_on = [ azurerm_key_vault_access_policy.vm_kv_policy ]
-}
+# resource "azurerm_key_vault_key" "vm_disk_encryption" {
+#   name         = "vm-disk-encryption-key"
+#   key_vault_id = azurerm_key_vault.kv.id
+#   key_type     = "RSA"
+#   key_size     = 4096
+#   key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
+#   depends_on = [ azurerm_key_vault_access_policy.vm_kv_policy ]
+# }
 
-# resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
-#   name                = "vm-disk-encryption-set"
-#   resource_group_name = azurerm_resource_group.disk_encryption_rg.name
-#   location            = azurerm_resource_group.disk_encryption_rg.location
-#   key_vault_key_id    = azurerm_key_vault_key.vm_disk_encryption.versionless_id
+# # resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
+# #   name                = "vm-disk-encryption-set"
+# #   resource_group_name = azurerm_resource_group.disk_encryption_rg.name
+# #   location            = azurerm_resource_group.disk_encryption_rg.location
+# #   key_vault_key_id    = azurerm_key_vault_key.vm_disk_encryption.versionless_id
 
-#   auto_key_rotation_enabled = true
+# #   auto_key_rotation_enabled = true
 
-#   identity {
-#     type = "SystemAssigned"
+# #   identity {
+# #     type = "SystemAssigned"
+# #   }
+# # }
+
+# resource "azurerm_key_vault_access_policy" "vm_disk_access_policy" {
+#   key_vault_id = azurerm_key_vault.kv.id
+#   tenant_id    = data.azurerm_disk_encryption_set.vm_disk_encryption.identity[0].tenant_id
+#   object_id    = data.azurerm_disk_encryption_set.vm_disk_encryption.identity[0].principal_id
+
+#   key_permissions = [
+#     "Create",
+#     "Delete",
+#     "Get",
+#     "Purge",
+#     "Recover",
+#     "Update",
+#     "List",
+#     "Decrypt",
+#     "Sign",
+#     "UnwrapKey",
+#     "WrapKey"
+#   ]
+# }
+
+# # # Terraform configuration for Azure Linux Virtual Machine
+# # # This VM will be used to run the reverse proxy
+
+# resource "azurerm_linux_virtual_machine" "vm" {
+#   name                = "vps-rproxy-vm"
+#   resource_group_name = azurerm_resource_group.vm_rg.name
+#   location            = azurerm_resource_group.vm_rg.location
+#   size                = "Standard_B2als_v2"
+#   admin_username      = var.vm_admin_username
+#   encryption_at_host_enabled = true
+#   vtpm_enabled = true
+#   secure_boot_enabled = true
+
+#   provision_vm_agent = true
+#   allow_extension_operations = true
+#   reboot_setting = "Always"
+#   patch_assessment_mode = "AutomaticByPlatform"
+#   patch_mode = "AutomaticByPlatform"
+
+#   network_interface_ids = [azurerm_network_interface.vm_nic.id]
+
+#   custom_data = "${base64encode(data.template_file.cloud-config.rendered)}"  # Adjust path to your cloud-init file
+
+#   admin_ssh_key {
+#     username   = var.vm_admin_username
+#     public_key = var.admin_ssh_key  # Adjust path to your SSH public key
+#   }
+
+#   os_disk {
+#     caching              = "ReadWrite"
+#     storage_account_type = "StandardSSD_LRS"
+#     disk_size_gb         = 32
+#     disk_encryption_set_id = data.azurerm_disk_encryption_set.vm_disk_encryption.id
+#   }
+
+#   source_image_reference {
+#     publisher = "Canonical"
+#     offer     = "ubuntu-24_04-lts"
+#     sku       = "server"
+#     version   = "latest"
 #   }
 # }
 
-resource "azurerm_key_vault_access_policy" "vm_disk_access_policy" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_disk_encryption_set.vm_disk_encryption.identity[0].tenant_id
-  object_id    = data.azurerm_disk_encryption_set.vm_disk_encryption.identity[0].principal_id
-
-  key_permissions = [
-    "Create",
-    "Delete",
-    "Get",
-    "Purge",
-    "Recover",
-    "Update",
-    "List",
-    "Decrypt",
-    "Sign",
-    "UnwrapKey",
-    "WrapKey"
-  ]
-}
-
-# # Terraform configuration for Azure Linux Virtual Machine
-# # This VM will be used to run the reverse proxy
-
-resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "vps-rproxy-vm"
-  resource_group_name = azurerm_resource_group.vm_rg.name
-  location            = azurerm_resource_group.vm_rg.location
-  size                = "Standard_B2als_v2"
-  admin_username      = var.vm_admin_username
-  encryption_at_host_enabled = true
-  vtpm_enabled = true
-  secure_boot_enabled = true
-
-  provision_vm_agent = true
-  allow_extension_operations = true
-  reboot_setting = "Always"
-  patch_assessment_mode = "AutomaticByPlatform"
-  patch_mode = "AutomaticByPlatform"
-
-  network_interface_ids = [azurerm_network_interface.vm_nic.id]
-
-  custom_data = "${base64encode(data.template_file.cloud-config.rendered)}"  # Adjust path to your cloud-init file
-
-  admin_ssh_key {
-    username   = var.vm_admin_username
-    public_key = var.admin_ssh_key  # Adjust path to your SSH public key
-  }
-
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "StandardSSD_LRS"
-    disk_size_gb         = 32
-    disk_encryption_set_id = data.azurerm_disk_encryption_set.vm_disk_encryption.id
-  }
-
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "ubuntu-24_04-lts"
-    sku       = "server"
-    version   = "latest"
-  }
-}
-
-resource "azurerm_virtual_machine_extension" "vm_extension" {
-  name                 = "AzurePolicyforLinux"
-  virtual_machine_id   = azurerm_linux_virtual_machine.vm.id
-  publisher            = "Microsoft.GuestConfiguration"
-  type                 = "ConfigurationForLinux"
-  type_handler_version = "1.0"
-  auto_upgrade_minor_version = "true"
-}
+# resource "azurerm_virtual_machine_extension" "vm_extension" {
+#   name                 = "AzurePolicyforLinux"
+#   virtual_machine_id   = azurerm_linux_virtual_machine.vm.id
+#   publisher            = "Microsoft.GuestConfiguration"
+#   type                 = "ConfigurationForLinux"
+#   type_handler_version = "1.0"
+#   auto_upgrade_minor_version = "true"
+# }
