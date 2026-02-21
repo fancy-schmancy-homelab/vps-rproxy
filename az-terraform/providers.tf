@@ -23,7 +23,7 @@ terraform {
 provider "azurerm" {
   features {
     key_vault {
-      purge_soft_delete_on_destroy = true
+      purge_soft_delete_on_destroy    = true
       recover_soft_deleted_key_vaults = true
     }
   }
@@ -34,6 +34,6 @@ provider "azurerm" {
 }
 
 provider "azuread" {
-  use_cli = false
-  tenant_id       = var.tenant_id
+  use_cli   = false
+  tenant_id = var.tenant_id
 }
