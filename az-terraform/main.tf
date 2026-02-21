@@ -280,7 +280,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     caching              = "ReadWrite"
     storage_account_type = "StandardSSD_LRS"
     disk_size_gb         = 32
-    disk_encryption_set_id = data.azurerm_disk_encryption_set.vm_disk_encryption.id
+    disk_encryption_set_id = azurerm_disk_encryption_set.vm_disk_encryption.id
   }
 
   source_image_reference {
