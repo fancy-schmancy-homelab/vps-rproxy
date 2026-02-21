@@ -251,42 +251,42 @@ resource "azurerm_role_assignment" "disk_encryption_set_kv_access" {
 # # # Terraform configuration for Azure Linux Virtual Machine
 # # # This VM will be used to run the reverse proxy
 
-# resource "azurerm_linux_virtual_machine" "vm" {
-#   name                = "vps-rproxy-vm"
-#   resource_group_name = azurerm_resource_group.vm_rg.name
-#   location            = azurerm_resource_group.vm_rg.location
-#   size                = "Standard_B2als_v2"
-#   admin_username      = var.vm_admin_username
-#   encryption_at_host_enabled = true
-#   vtpm_enabled = true
-#   secure_boot_enabled = true
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                = "vps-rproxy-vm"
+  resource_group_name = azurerm_resource_group.vm_rg.name
+  location            = azurerm_resource_group.vm_rg.location
+  size                = "Standard_B2als_v2"
+  admin_username      = var.vm_admin_username
+  encryption_at_host_enabled = true
+  vtpm_enabled = true
+  secure_boot_enabled = true
 
-#   provision_vm_agent = true
-#   allow_extension_operations = true
-#   reboot_setting = "Always"
-#   patch_assessment_mode = "AutomaticByPlatform"
-#   patch_mode = "AutomaticByPlatform"
+  provision_vm_agent = true
+  allow_extension_operations = true
+  reboot_setting = "Always"
+  patch_assessment_mode = "AutomaticByPlatform"
+  patch_mode = "AutomaticByPlatform"
 
-#   network_interface_ids = [azurerm_network_interface.vm_nic.id]
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
-#   custom_data = "${base64encode(data.template_file.cloud-config.rendered)}"  # Adjust path to your cloud-init file
+  custom_data = "${base64encode(data.template_file.cloud-config.rendered)}"  # Adjust path to your cloud-init file
 
-#   admin_ssh_key {
-#     username   = var.vm_admin_username
-#     public_key = var.admin_ssh_key  # Adjust path to your SSH public key
-#   }
+  admin_ssh_key {
+    username   = var.vm_admin_username
+    public_key = var.admin_ssh_key  # Adjust path to your SSH public key
+  }
 
-#   os_disk {
-#     caching              = "ReadWrite"
-#     storage_account_type = "StandardSSD_LRS"
-#     disk_size_gb         = 32
-#     disk_encryption_set_id = data.azurerm_disk_encryption_set.vm_disk_encryption.id
-#   }
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "StandardSSD_LRS"
+    disk_size_gb         = 32
+    disk_encryption_set_id = data.azurerm_disk_encryption_set.vm_disk_encryption.id
+  }
 
-#   source_image_reference {
-#     publisher = "Canonical"
-#     offer     = "ubuntu-24_04-lts"
-#     sku       = "server"
-#     version   = "latest"
-#   }
-# }
+  source_image_reference {
+    publisher = "Debian"
+    offer     = "debian-13"
+    sku       = "13-gen2"
+    version   = "latest"
+  }
+}
