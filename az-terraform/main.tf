@@ -56,7 +56,7 @@ resource "azurerm_network_security_rule" "allow_icmp" {
   source_address_prefix        = "Internet"
   source_port_range            = "*"
   destination_port_range       = "*"
-  destination_address_prefix   = ["10.0.1.0/24"]
+  destination_address_prefixes = ["10.0.1.0/24"]
   resource_group_name          = azurerm_resource_group.network_rg.name
   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
@@ -71,7 +71,7 @@ resource "azurerm_network_security_rule" "allow_icmpv6" {
   source_address_prefix        = "Internet"
   source_port_range            = "*"
   destination_port_range       = "*"
-  destination_address_prefix   = ["2404:f800:8000:122::/64"]
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
   resource_group_name          = azurerm_resource_group.network_rg.name
   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
