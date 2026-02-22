@@ -276,7 +276,7 @@ resource "azurerm_key_vault" "kv" {
   purge_protection_enabled      = true
   enabled_for_disk_encryption   = true
   enabled_for_deployment        = true
-  public_network_access_enabled = false
+  public_network_access_enabled = true
   rbac_authorization_enabled    = true
   network_acls {
     default_action = "Deny"
