@@ -53,10 +53,25 @@ resource "azurerm_network_security_rule" "allow_icmp" {
   direction                    = "Inbound"
   access                       = "Allow"
   protocol                     = "Icmp"
-  source_address_prefix        = "*"
+  source_address_prefix        = "Internet"
   source_port_range            = "*"
   destination_port_range       = "*"
-  destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
+  destination_address_prefixes = ["10.0.1.0/24"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
+
+resource "azurerm_network_security_rule" "allow_icmpv6" {
+  name                         = "AllowICMPv6"
+  priority                     = 1011
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Icmp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "*"
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
   resource_group_name          = azurerm_resource_group.network_rg.name
   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
@@ -68,10 +83,25 @@ resource "azurerm_network_security_rule" "allow_https" {
   direction                    = "Inbound"
   access                       = "Allow"
   protocol                     = "Tcp"
-  source_address_prefix        = "*"
+  source_address_prefix        = "Internet"
   source_port_range            = "*"
   destination_port_range       = "443"
-  destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
+  destination_address_prefixes = ["10.0.1.0/24"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
+
+resource "azurerm_network_security_rule" "allow_httpsv6" {
+  name                         = "AllowHTTPSv6"
+  priority                     = 1021
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Tcp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "443"
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
   resource_group_name          = azurerm_resource_group.network_rg.name
   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
@@ -83,10 +113,25 @@ resource "azurerm_network_security_rule" "allow_https_udp" {
   direction                    = "Inbound"
   access                       = "Allow"
   protocol                     = "Udp"
-  source_address_prefix        = "*"
+  source_address_prefix        = "Internet"
   source_port_range            = "*"
   destination_port_range       = "443"
-  destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
+  destination_address_prefixes = ["10.0.1.0/24"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
+
+resource "azurerm_network_security_rule" "allow_https_udpv6" {
+  name                         = "AllowHTTPS-UDPv6"
+  priority                     = 1031
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "443"
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
   resource_group_name          = azurerm_resource_group.network_rg.name
   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
@@ -98,10 +143,25 @@ resource "azurerm_network_security_rule" "allow_tailscale_udp" {
   direction                    = "Inbound"
   access                       = "Allow"
   protocol                     = "Udp"
-  source_address_prefix        = "*"
+  source_address_prefix        = "Internet"
   source_port_range            = "*"
   destination_port_range       = "41641"
-  destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
+  destination_address_prefixes = ["10.0.1.0/24"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
+
+resource "azurerm_network_security_rule" "allow_tailscale_udpv6" {
+  name                         = "AllowTailscale-UDPv6"
+  priority                     = 1041
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "41641"
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
   resource_group_name          = azurerm_resource_group.network_rg.name
   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
@@ -113,10 +173,25 @@ resource "azurerm_network_security_rule" "allow_tailscale_relay_udp" {
   direction                    = "Inbound"
   access                       = "Allow"
   protocol                     = "Udp"
-  source_address_prefix        = "*"
+  source_address_prefix        = "Internet"
   source_port_range            = "*"
   destination_port_range       = "45129"
-  destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
+  destination_address_prefixes = ["10.0.1.0/24"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
+
+resource "azurerm_network_security_rule" "allow_tailscale_relay_udpv6" {
+  name                         = "AllowTailscaleRelay-UDPv6"
+  priority                     = 1051
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "45129"
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
   resource_group_name          = azurerm_resource_group.network_rg.name
   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
