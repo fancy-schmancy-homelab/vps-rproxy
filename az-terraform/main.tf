@@ -42,84 +42,85 @@ resource "azurerm_network_security_group" "vm_nsg" {
 #   source_address_prefixes    = var.allowed_ip_addresses
 #   source_port_range          = "*"
 #   destination_port_range     = "22"
-#   destination_address_prefix = "*"
+#   destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
 #   resource_group_name         = azurerm_resource_group.network_rg.name
 #   network_security_group_name = azurerm_network_security_group.vm_nsg.name
 # }
 
 resource "azurerm_network_security_rule" "allow_icmp" {
-  name                        = "AllowICMP"
-  priority                    = 1010
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Icmp"
-  source_address_prefix       = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.network_rg.name
-  network_security_group_name = azurerm_network_security_group.vm_nsg.name
-  depends_on                  = [azurerm_network_security_group.vm_nsg]
+  name                         = "AllowICMP"
+  priority                     = 1010
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Icmp"
+  source_address_prefix        = "*"
+  source_port_range            = "*"
+  destination_port_range       = "*"
+  destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
 }
 
 resource "azurerm_network_security_rule" "allow_https" {
-  name                        = "AllowHTTPS"
-  priority                    = 1020
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_address_prefix       = "*"
-  source_port_range           = "*"
-  destination_port_range      = "443"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.network_rg.name
-  network_security_group_name = azurerm_network_security_group.vm_nsg.name
-  depends_on                  = [azurerm_network_security_group.vm_nsg]
+  name                         = "AllowHTTPS"
+  priority                     = 1020
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Tcp"
+  source_address_prefix        = "*"
+  source_port_range            = "*"
+  destination_port_range       = "443"
+  destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
 }
 
 resource "azurerm_network_security_rule" "allow_https_udp" {
-  name                        = "AllowHTTPS-UDP"
-  priority                    = 1030
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Udp"
-  source_address_prefix       = "*"
-  source_port_range           = "*"
-  destination_port_range      = "443"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.network_rg.name
-  network_security_group_name = azurerm_network_security_group.vm_nsg.name
-  depends_on                  = [azurerm_network_security_group.vm_nsg]
+  name                         = "AllowHTTPS-UDP"
+  priority                     = 1030
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "*"
+  source_port_range            = "*"
+  destination_port_range       = "443"
+  destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
 }
 
 resource "azurerm_network_security_rule" "allow_tailscale_udp" {
-  name                        = "AllowTailscale-UDP"
-  priority                    = 1040
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Udp"
-  source_address_prefix       = "*"
-  source_port_range           = "*"
-  destination_port_range      = "41641"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.network_rg.name
-  network_security_group_name = azurerm_network_security_group.vm_nsg.name
-  depends_on                  = [azurerm_network_security_group.vm_nsg]
+  name                         = "AllowTailscale-UDP"
+  priority                     = 1040
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "*"
+  source_port_range            = "*"
+  destination_port_range       = "41641"
+  destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
 }
 
-# resource "azurerm_network_security_rule" "drop_traffic" {
-#   name                       = "Drop-All-Traffic"
-#   priority                   = 4000
-#   direction                  = "Inbound"
-#   access                     = "Deny"
-#   protocol                   = "*"
-#   source_address_prefix      = "*"
-#   source_port_range          = "*"
-#   destination_port_range     = "*"
-#   destination_address_prefix = "*"
-#   resource_group_name         = azurerm_resource_group.network_rg.name
-#   network_security_group_name = azurerm_network_security_group.vm_nsg.name
-# }
+resource "azurerm_network_security_rule" "allow_tailscale_relay_udp" {
+  name                         = "AllowTailscaleRelay-UDP"
+  priority                     = 1050
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "*"
+  source_port_range            = "*"
+  destination_port_range       = "45129"
+  destination_address_prefixes = azurerm_subnet.vm_subnet.address_prefixes
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
 resource "azurerm_subnet" "vm_subnet" {
   name                 = "vm-subnet"
@@ -224,7 +225,7 @@ resource "azurerm_key_vault_key" "vm_disk_encryption" {
   key_type     = "RSA"
   key_size     = 4096
   key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
-  depends_on = [ azurerm_key_vault.kv, azurerm_role_assignment.service_principal_kv_access ]
+  depends_on   = [azurerm_key_vault.kv, azurerm_role_assignment.service_principal_kv_access]
 }
 
 resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
@@ -238,42 +239,42 @@ resource "azurerm_disk_encryption_set" "vm_disk_encryption" {
   identity {
     type = "SystemAssigned"
   }
-  depends_on = [ azurerm_key_vault_key.vm_disk_encryption ]
+  depends_on = [azurerm_key_vault_key.vm_disk_encryption]
 }
 
 resource "azurerm_role_assignment" "disk_encryption_set_kv_access" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Crypto Service Encryption User"
   principal_id         = azurerm_disk_encryption_set.vm_disk_encryption.identity[0].principal_id
-  depends_on           = [ azurerm_key_vault.kv, azurerm_disk_encryption_set.vm_disk_encryption ]
+  depends_on           = [azurerm_key_vault.kv, azurerm_disk_encryption_set.vm_disk_encryption]
 }
 
 # # # Terraform configuration for Azure Linux Virtual Machine
 # # # This VM will be used to run the reverse proxy
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "vps-rproxy-vm"
-  resource_group_name = azurerm_resource_group.vm_rg.name
-  location            = azurerm_resource_group.vm_rg.location
-  size                = "Standard_B2als_v2"
-  admin_username      = var.vm_admin_username
+  name                       = "vps-rproxy-vm"
+  resource_group_name        = azurerm_resource_group.vm_rg.name
+  location                   = azurerm_resource_group.vm_rg.location
+  size                       = "Standard_B2als_v2"
+  admin_username             = var.vm_admin_username
   encryption_at_host_enabled = true
-  vtpm_enabled = true
-  secure_boot_enabled = true
+  vtpm_enabled               = true
+  secure_boot_enabled        = true
 
   network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
-  custom_data = "${base64encode(data.template_file.cloud-config.rendered)}"  # Adjust path to your cloud-init file
+  custom_data = base64encode(data.template_file.cloud-config.rendered) # Adjust path to your cloud-init file
 
   admin_ssh_key {
     username   = var.vm_admin_username
-    public_key = var.admin_ssh_key  # Adjust path to your SSH public key
+    public_key = var.admin_ssh_key # Adjust path to your SSH public key
   }
 
   os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "StandardSSD_LRS"
-    disk_size_gb         = 32
+    caching                = "ReadWrite"
+    storage_account_type   = "StandardSSD_LRS"
+    disk_size_gb           = 32
     disk_encryption_set_id = azurerm_disk_encryption_set.vm_disk_encryption.id
   }
 
