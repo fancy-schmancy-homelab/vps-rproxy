@@ -276,16 +276,16 @@ resource "azurerm_key_vault" "kv" {
   purge_protection_enabled      = true
   enabled_for_disk_encryption   = true
   enabled_for_deployment        = true
-  public_network_access_enabled = true
+  public_network_access_enabled = false
   rbac_authorization_enabled    = true
-  # network_acls {
-  #   default_action = "Deny"
-  #   bypass         = "AzureServices"
-  #   ip_rules       = var.allowed_ip_addresses
-  #   virtual_network_subnet_ids = [
-  #     azurerm_subnet.vm_subnet.id
-  #   ]
-  # }
+  network_acls {
+    default_action = "Deny"
+    bypass         = "AzureServices"
+    ip_rules       = var.allowed_ip_addresses
+    virtual_network_subnet_ids = [
+      azurerm_subnet.vm_subnet.id
+    ]
+  }
 }
 
 resource "azurerm_role_assignment" "service_principal_kv_access" {
