@@ -26,11 +26,11 @@ variable "location" {
   default     = "southcentralus"
 }
 
-# variable "allowed_ip_addresses" {
-#   description = "List of allowed IP addresses for Key Vault access."
-#   type        = list(string)
-#   sensitive   = true
-# }
+variable "allowed_ip_addresses" {
+  description = "List of allowed IP addresses for Key Vault access."
+  type        = list(string)
+  sensitive   = true
+}
 
 variable "subscription_id" {
   description = "Azure Subscription ID."
