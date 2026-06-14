@@ -1,4 +1,8 @@
 #cloud-config
+system_info:
+  default_user:
+    shell: /home/linuxbrew/.linuxbrew/bin/zsh
+
 write_files:
   - path: /home/thirstbeast/.zshrc
     owner: thirstbeast:thirstbeast
@@ -22,6 +26,7 @@ runcmd:
   - sudo dnf install -y bubblewrap git python3-pip wget
   - su - thirstbeast -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
   - su - thirstbeast -c "/home/linuxbrew/.linuxbrew/bin/brew install -y jq zsh vim pure fastfetch podman podman-compose zsh-autosuggestions zsh-syntax-highlighting"
+  - sudo echo "/home/linuxbrew/.linuxbrew/bin/zsh" >> /etc/shells
   - curl -fsSL https://tailscale.com/install.sh | sh
   # - ['sh', '-c', "echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf && echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf && sudo sysctl -p /etc/sysctl.d/99-tailscale.conf" ]
   - tailscale up --ssh --accept-routes --authkey=${tailscale_auth_key}
