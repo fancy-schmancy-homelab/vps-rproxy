@@ -7,12 +7,12 @@ caddy_tls_providers:
     resolver_ip: 1.1.1.1
 
 caddy_endpoints:
-  - friendly_name: jf
+  - friendly_name: jellyfin
     fqdn: jf.amireally.online
     upstream: "truenas-scale:8096"
     tls_insecure: false
     tls_provider: cloudflare
-  - friendly_name: abs
+  - friendly_name: audiobookshelf
     fqdn: abs.amireally.online
     upstream: "truenas-scale:30067"
     tls_insecure: false
@@ -20,5 +20,10 @@ caddy_endpoints:
   - friendly_name: pocket-id
     fqdn: oidc.amireally.online
     upstream: "truenas-scale:30218"
+    tls_insecure: false
+    tls_provider: cloudflare
+  - friendly_name: navidrome
+    fqdn: nd.amireally.online
+    upstream: "truenas-scale:4533"
     tls_insecure: false
     tls_provider: cloudflare
