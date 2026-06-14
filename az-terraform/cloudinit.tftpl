@@ -17,7 +17,29 @@ system_info:
   default_user:
     shell: /usr/bin/zsh
 
+write_files:
+  - path: /home/thirstbeast/.zshrc
+    owner: thirstbeast:thirstbeast
+    permissions: '0644'
+    defer: true
+    content: |
+      plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+      alias dcp="podman-compose -f ~/hawser.yml"
+      alias update="sudo dnf update && brew update && brew upgrade"
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+      fpath+=("$(brew --prefix)/share/zsh/site-functions")
+      source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+      source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+      autoload -U promptinit; promptinit
+      prompt pure
+      fastfetch
+
+
 runcmd:
+  - sudo dnf group install -y 'Development Tools'
+  - sudo dnf install -y bubblewrap
+  - NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  - /home/linuxbrew/.linuxbrew/bin/brew install --quiet --no-cache pure fastfetch podman-compose zsh-autosuggestions zsh-syntax-highlighting
   - curl -fsSL https://tailscale.com/install.sh | sh
   # - ['sh', '-c', "echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf && echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf && sudo sysctl -p /etc/sysctl.d/99-tailscale.conf" ]
   - tailscale up --ssh --accept-routes --authkey=${tailscale_auth_key}
