@@ -355,9 +355,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   source_image_reference {
-    publisher = "microsoftazurelinux"
-    offer     = "azurelinux-4"
-    sku       = "4-arm64"
+    publisher = "almalinux"
+    offer     = "almalinux-arm"
+    sku       = "10-arm64-gen2"
     version   = "latest"
   }
 }
