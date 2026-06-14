@@ -11,7 +11,6 @@ packages:
   - zsh
   - jq
   - gnupg
-  - podman
 
 system_info:
   default_user:
@@ -39,7 +38,7 @@ runcmd:
   - sudo dnf group install -y 'Development Tools'
   - sudo dnf install -y bubblewrap
   - NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  - /home/linuxbrew/.linuxbrew/bin/brew install --quiet --no-cache pure fastfetch podman-compose zsh-autosuggestions zsh-syntax-highlighting
+  - /home/linuxbrew/.linuxbrew/bin/brew install --quiet --no-cache pure fastfetch podman podman-compose zsh-autosuggestions zsh-syntax-highlighting
   - curl -fsSL https://tailscale.com/install.sh | sh
   # - ['sh', '-c', "echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf && echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf && sudo sysctl -p /etc/sysctl.d/99-tailscale.conf" ]
   - tailscale up --ssh --accept-routes --authkey=${tailscale_auth_key}
