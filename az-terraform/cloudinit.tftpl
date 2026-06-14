@@ -1,8 +1,4 @@
 #cloud-config
-system_info:
-  default_user:
-    shell: /usr/bin/zsh
-
 runcmd:
   - dnf update -y
   - dnf install -y git python3-pip curl wget ca-certificates vim htop zsh jq gnupg podman
