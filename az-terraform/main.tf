@@ -331,7 +331,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   name                       = "vps-rproxy-vm"
   resource_group_name        = azurerm_resource_group.vm_rg.name
   location                   = azurerm_resource_group.vm_rg.location
-  size                       = "Standard_B2pts_v2"
+  size                       = "Standard_B2pls_v2"
   admin_username             = var.vm_admin_username
   encryption_at_host_enabled = true
   # vtpm_enabled               = true
@@ -354,9 +354,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   source_image_reference {
-    publisher = "Debian"
-    offer     = "debian-13"
-    sku       = "13-arm64"
+    publisher = "microsoftazurelinux"
+    offer     = "azurelinux-4"
+    sku       = "4-arm64"
     version   = "latest"
   }
 }
