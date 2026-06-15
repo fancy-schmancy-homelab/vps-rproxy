@@ -47,170 +47,170 @@ resource "azurerm_network_security_group" "vm_nsg" {
 #   network_security_group_name = azurerm_network_security_group.vm_nsg.name
 # }
 
-# resource "azurerm_network_security_rule" "allow_icmp" {
-#   name                         = "AllowICMP"
-#   priority                     = 1010
-#   direction                    = "Inbound"
-#   access                       = "Allow"
-#   protocol                     = "Icmp"
-#   source_address_prefix        = "Internet"
-#   source_port_range            = "*"
-#   destination_port_range       = "*"
-#   destination_address_prefixes = ["10.100.1.0/24"]
-#   resource_group_name          = azurerm_resource_group.network_rg.name
-#   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
-#   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_network_security_rule" "allow_icmp" {
+  name                         = "AllowICMP"
+  priority                     = 1010
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Icmp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "*"
+  destination_address_prefixes = ["10.100.1.0/24"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
-# resource "azurerm_network_security_rule" "allow_icmpv6" {
-#   name                         = "AllowICMPv6"
-#   priority                     = 1011
-#   direction                    = "Inbound"
-#   access                       = "Allow"
-#   protocol                     = "Icmp"
-#   source_address_prefix        = "Internet"
-#   source_port_range            = "*"
-#   destination_port_range       = "*"
-#   destination_address_prefixes = ["2404:f800:8000:122::/64"]
-#   resource_group_name          = azurerm_resource_group.network_rg.name
-#   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
-#   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_network_security_rule" "allow_icmpv6" {
+  name                         = "AllowICMPv6"
+  priority                     = 1011
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Icmp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "*"
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
-# resource "azurerm_network_security_rule" "allow_https" {
-#   name                         = "AllowHTTPS"
-#   priority                     = 1020
-#   direction                    = "Inbound"
-#   access                       = "Allow"
-#   protocol                     = "Tcp"
-#   source_address_prefix        = "Internet"
-#   source_port_range            = "*"
-#   destination_port_range       = "443"
-#   destination_address_prefixes = ["10.100.1.0/24"]
-#   resource_group_name          = azurerm_resource_group.network_rg.name
-#   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
-#   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_network_security_rule" "allow_https" {
+  name                         = "AllowHTTPS"
+  priority                     = 1020
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Tcp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "443"
+  destination_address_prefixes = ["10.100.1.0/24"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
-# resource "azurerm_network_security_rule" "allow_httpsv6" {
-#   name                         = "AllowHTTPSv6"
-#   priority                     = 1021
-#   direction                    = "Inbound"
-#   access                       = "Allow"
-#   protocol                     = "Tcp"
-#   source_address_prefix        = "Internet"
-#   source_port_range            = "*"
-#   destination_port_range       = "443"
-#   destination_address_prefixes = ["2404:f800:8000:122::/64"]
-#   resource_group_name          = azurerm_resource_group.network_rg.name
-#   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
-#   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_network_security_rule" "allow_httpsv6" {
+  name                         = "AllowHTTPSv6"
+  priority                     = 1021
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Tcp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "443"
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
-# resource "azurerm_network_security_rule" "allow_https_udp" {
-#   name                         = "AllowHTTPS-UDP"
-#   priority                     = 1030
-#   direction                    = "Inbound"
-#   access                       = "Allow"
-#   protocol                     = "Udp"
-#   source_address_prefix        = "Internet"
-#   source_port_range            = "*"
-#   destination_port_range       = "443"
-#   destination_address_prefixes = ["10.100.1.0/24"]
-#   resource_group_name          = azurerm_resource_group.network_rg.name
-#   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
-#   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_network_security_rule" "allow_https_udp" {
+  name                         = "AllowHTTPS-UDP"
+  priority                     = 1030
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "443"
+  destination_address_prefixes = ["10.100.1.0/24"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
-# resource "azurerm_network_security_rule" "allow_https_udpv6" {
-#   name                         = "AllowHTTPS-UDPv6"
-#   priority                     = 1031
-#   direction                    = "Inbound"
-#   access                       = "Allow"
-#   protocol                     = "Udp"
-#   source_address_prefix        = "Internet"
-#   source_port_range            = "*"
-#   destination_port_range       = "443"
-#   destination_address_prefixes = ["2404:f800:8000:122::/64"]
-#   resource_group_name          = azurerm_resource_group.network_rg.name
-#   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
-#   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_network_security_rule" "allow_https_udpv6" {
+  name                         = "AllowHTTPS-UDPv6"
+  priority                     = 1031
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "443"
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
-# resource "azurerm_network_security_rule" "allow_tailscale_udp" {
-#   name                         = "AllowTailscale-UDP"
-#   priority                     = 1040
-#   direction                    = "Inbound"
-#   access                       = "Allow"
-#   protocol                     = "Udp"
-#   source_address_prefix        = "Internet"
-#   source_port_range            = "*"
-#   destination_port_range       = "41641"
-#   destination_address_prefixes = ["10.100.1.0/24"]
-#   resource_group_name          = azurerm_resource_group.network_rg.name
-#   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
-#   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_network_security_rule" "allow_tailscale_udp" {
+  name                         = "AllowTailscale-UDP"
+  priority                     = 1040
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "41641"
+  destination_address_prefixes = ["10.100.1.0/24"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
-# resource "azurerm_network_security_rule" "allow_tailscale_udpv6" {
-#   name                         = "AllowTailscale-UDPv6"
-#   priority                     = 1041
-#   direction                    = "Inbound"
-#   access                       = "Allow"
-#   protocol                     = "Udp"
-#   source_address_prefix        = "Internet"
-#   source_port_range            = "*"
-#   destination_port_range       = "41641"
-#   destination_address_prefixes = ["2404:f800:8000:122::/64"]
-#   resource_group_name          = azurerm_resource_group.network_rg.name
-#   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
-#   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_network_security_rule" "allow_tailscale_udpv6" {
+  name                         = "AllowTailscale-UDPv6"
+  priority                     = 1041
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "41641"
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
-# resource "azurerm_network_security_rule" "allow_tailscale_relay_udp" {
-#   name                         = "AllowTailscaleRelay-UDP"
-#   priority                     = 1050
-#   direction                    = "Inbound"
-#   access                       = "Allow"
-#   protocol                     = "Udp"
-#   source_address_prefix        = "Internet"
-#   source_port_range            = "*"
-#   destination_port_range       = "45129"
-#   destination_address_prefixes = ["10.100.1.0/24"]
-#   resource_group_name          = azurerm_resource_group.network_rg.name
-#   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
-#   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_network_security_rule" "allow_tailscale_relay_udp" {
+  name                         = "AllowTailscaleRelay-UDP"
+  priority                     = 1050
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "45129"
+  destination_address_prefixes = ["10.100.1.0/24"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
-# resource "azurerm_network_security_rule" "allow_tailscale_relay_udpv6" {
-#   name                         = "AllowTailscaleRelay-UDPv6"
-#   priority                     = 1051
-#   direction                    = "Inbound"
-#   access                       = "Allow"
-#   protocol                     = "Udp"
-#   source_address_prefix        = "Internet"
-#   source_port_range            = "*"
-#   destination_port_range       = "45129"
-#   destination_address_prefixes = ["2404:f800:8000:122::/64"]
-#   resource_group_name          = azurerm_resource_group.network_rg.name
-#   network_security_group_name  = azurerm_network_security_group.vm_nsg.name
-#   depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_network_security_rule" "allow_tailscale_relay_udpv6" {
+  name                         = "AllowTailscaleRelay-UDPv6"
+  priority                     = 1051
+  direction                    = "Inbound"
+  access                       = "Allow"
+  protocol                     = "Udp"
+  source_address_prefix        = "Internet"
+  source_port_range            = "*"
+  destination_port_range       = "45129"
+  destination_address_prefixes = ["2404:f800:8000:122::/64"]
+  resource_group_name          = azurerm_resource_group.network_rg.name
+  network_security_group_name  = azurerm_network_security_group.vm_nsg.name
+  depends_on                   = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
-# resource "azurerm_subnet" "vm_subnet" {
-#   name                 = "vm-subnet"
-#   resource_group_name  = azurerm_resource_group.network_rg.name
-#   virtual_network_name = azurerm_virtual_network.vm_network.name
-#   address_prefixes     = ["10.100.1.0/24", "2404:f800:8000:122::/64"]
-#   depends_on           = [azurerm_virtual_network.vm_network]
-#   service_endpoints    = ["Microsoft.KeyVault"]
-# }
+resource "azurerm_subnet" "vm_subnet" {
+  name                 = "vm-subnet"
+  resource_group_name  = azurerm_resource_group.network_rg.name
+  virtual_network_name = azurerm_virtual_network.vm_network.name
+  address_prefixes     = ["10.100.1.0/24", "2404:f800:8000:122::/64"]
+  depends_on           = [azurerm_virtual_network.vm_network]
+  service_endpoints    = ["Microsoft.KeyVault"]
+}
 
-# resource "azurerm_subnet_network_security_group_association" "vm_subnet_nsg" {
-#   subnet_id                 = azurerm_subnet.vm_subnet.id
-#   network_security_group_id = azurerm_network_security_group.vm_nsg.id
-#   depends_on                = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
-# }
+resource "azurerm_subnet_network_security_group_association" "vm_subnet_nsg" {
+  subnet_id                 = azurerm_subnet.vm_subnet.id
+  network_security_group_id = azurerm_network_security_group.vm_nsg.id
+  depends_on                = [azurerm_network_security_group.vm_nsg, azurerm_subnet.vm_subnet]
+}
 
 resource "random_string" "random" {
   length  = 16
@@ -220,50 +220,50 @@ resource "random_string" "random" {
   numeric = true
 }
 
-# resource "azurerm_public_ip" "vm_public_ip" {
-#   name                = "vps-rproxy-public-ip"
-#   location            = azurerm_resource_group.network_rg.location
-#   resource_group_name = azurerm_resource_group.network_rg.name
-#   allocation_method   = "Static"
+resource "azurerm_public_ip" "vm_public_ip" {
+  name                = "vps-rproxy-public-ip"
+  location            = azurerm_resource_group.network_rg.location
+  resource_group_name = azurerm_resource_group.network_rg.name
+  allocation_method   = "Static"
 
-#   domain_name_label = "a${random_string.random.result}" # Ensure this is unique across Azure
-#   depends_on        = [azurerm_resource_group.network_rg]
-# }
+  domain_name_label = "a${random_string.random.result}" # Ensure this is unique across Azure
+  depends_on        = [azurerm_resource_group.network_rg]
+}
 
-# resource "azurerm_public_ip" "vm_public_ipv6" {
-#   name                = "vps-rproxy-public-ipv6"
-#   location            = azurerm_resource_group.network_rg.location
-#   resource_group_name = azurerm_resource_group.network_rg.name
-#   allocation_method   = "Static"
+resource "azurerm_public_ip" "vm_public_ipv6" {
+  name                = "vps-rproxy-public-ipv6"
+  location            = azurerm_resource_group.network_rg.location
+  resource_group_name = azurerm_resource_group.network_rg.name
+  allocation_method   = "Static"
 
-#   domain_name_label = "a6${random_string.random.result}" # Ensure this is unique across Azure
-#   ip_version        = "IPv6"
-#   depends_on        = [azurerm_resource_group.network_rg]
-# }
+  domain_name_label = "a6${random_string.random.result}" # Ensure this is unique across Azure
+  ip_version        = "IPv6"
+  depends_on        = [azurerm_resource_group.network_rg]
+}
 
 
-# resource "azurerm_network_interface" "vm_nic" {
-#   name                = "vm-nic"
-#   location            = azurerm_resource_group.network_rg.location
-#   resource_group_name = azurerm_resource_group.network_rg.name
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "vm-nic"
+  location            = azurerm_resource_group.network_rg.location
+  resource_group_name = azurerm_resource_group.network_rg.name
 
-#   ip_configuration {
-#     name                          = "internal"
-#     subnet_id                     = azurerm_subnet.vm_subnet.id
-#     private_ip_address_allocation = "Dynamic"
-#     public_ip_address_id          = azurerm_public_ip.vm_public_ip.id
-#     primary                       = true
-#   }
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.vm_subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.vm_public_ip.id
+    primary                       = true
+  }
 
-#   ip_configuration {
-#     name                          = "internal-ipv6"
-#     subnet_id                     = azurerm_subnet.vm_subnet.id
-#     private_ip_address_allocation = "Dynamic"
-#     public_ip_address_id          = azurerm_public_ip.vm_public_ipv6.id
-#     private_ip_address_version    = "IPv6"
-#   }
-#   depends_on = [azurerm_subnet.vm_subnet, azurerm_public_ip.vm_public_ip, azurerm_public_ip.vm_public_ipv6]
-# }
+  ip_configuration {
+    name                          = "internal-ipv6"
+    subnet_id                     = azurerm_subnet.vm_subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.vm_public_ipv6.id
+    private_ip_address_version    = "IPv6"
+  }
+  depends_on = [azurerm_subnet.vm_subnet, azurerm_public_ip.vm_public_ip, azurerm_public_ip.vm_public_ipv6]
+}
 
 
 resource "azurerm_key_vault" "kv" {
@@ -279,14 +279,14 @@ resource "azurerm_key_vault" "kv" {
   enabled_for_deployment        = true
   public_network_access_enabled = true
   rbac_authorization_enabled    = true
-  # network_acls {
-  #   default_action = "Deny"
-  #   bypass         = "AzureServices"
-  #   ip_rules       = var.allowed_ip_addresses
-  #   virtual_network_subnet_ids = [
-  #     azurerm_subnet.vm_subnet.id
-  #   ]
-  # }
+  network_acls {
+    default_action = "Deny"
+    bypass         = "AzureServices"
+    ip_rules       = var.allowed_ip_addresses
+    virtual_network_subnet_ids = [
+      azurerm_subnet.vm_subnet.id
+    ]
+  }
 }
 
 resource "azurerm_role_assignment" "service_principal_kv_access" {
@@ -328,39 +328,39 @@ resource "azurerm_role_assignment" "disk_encryption_set_kv_access" {
 # # # Terraform configuration for Azure Linux Virtual Machine
 # # # This VM will be used to run the reverse proxy
 
-# resource "azurerm_linux_virtual_machine" "vm" {
-#   name                       = "vps-rproxy-vm"
-#   resource_group_name        = azurerm_resource_group.vm_rg.name
-#   location                   = azurerm_resource_group.vm_rg.location
-#   size                       = "Standard_B2pls_v2"
-#   admin_username             = var.vm_admin_username
-#   encryption_at_host_enabled = true
-#   # vtpm_enabled               = true
-#   # secure_boot_enabled        = true
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                       = "vps-rproxy-vm"
+  resource_group_name        = azurerm_resource_group.vm_rg.name
+  location                   = azurerm_resource_group.vm_rg.location
+  size                       = "Standard_B2pls_v2"
+  admin_username             = var.vm_admin_username
+  encryption_at_host_enabled = true
+  # vtpm_enabled               = true
+  # secure_boot_enabled        = true
 
-#   network_interface_ids = [azurerm_network_interface.vm_nic.id]
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
-#   custom_data = base64encode(data.template_file.cloud-config.rendered) # Adjust path to your cloud-init file
+  custom_data = base64encode(data.template_file.cloud-config.rendered) # Adjust path to your cloud-init file
 
-#   admin_ssh_key {
-#     username   = var.vm_admin_username
-#     public_key = var.admin_ssh_key # Adjust path to your SSH public key
-#   }
+  admin_ssh_key {
+    username   = var.vm_admin_username
+    public_key = var.admin_ssh_key # Adjust path to your SSH public key
+  }
 
-#   os_disk {
-#     caching                = "ReadWrite"
-#     storage_account_type   = "StandardSSD_LRS"
-#     disk_size_gb           = 32
-#     disk_encryption_set_id = azurerm_disk_encryption_set.vm_disk_encryption.id
-#   }
+  os_disk {
+    caching                = "ReadWrite"
+    storage_account_type   = "StandardSSD_LRS"
+    disk_size_gb           = 32
+    disk_encryption_set_id = azurerm_disk_encryption_set.vm_disk_encryption.id
+  }
 
-#   source_image_reference {
-#     publisher = "almalinux"
-#     offer     = "almalinux-arm"
-#     sku       = "10-arm64-gen2"
-#     version   = "latest"
-#   }
-# }
+  source_image_reference {
+    publisher = "almalinux"
+    offer     = "almalinux-arm"
+    sku       = "10-arm64-gen2"
+    version   = "latest"
+  }
+}
 
 # resource "azurerm_linux_virtual_machine" "vm" {
 #   name                       = "vps-rproxy-vm"
