@@ -24,7 +24,7 @@ runcmd:
   - sudo dnf group install -y 'Development Tools'
   - sudo dnf install -y bubblewrap git python3-pip wget nc vim golang jq
   - su - thirstbeast -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
-  - su - thirstbeast -c "/home/linuxbrew/.linuxbrew/bin/brew install -y zsh pure fastfetch zsh-autosuggestions zsh-syntax-highlighting"
+  - su - thirstbeast -c "/home/linuxbrew/.linuxbrew/bin/brew install zsh pure fastfetch zsh-autosuggestions zsh-syntax-highlighting"
   - sudo sh -c 'echo "/home/linuxbrew/.linuxbrew/bin/zsh" >> /etc/shells'
   - sudo chsh -s /home/linuxbrew/.linuxbrew/bin/zsh thirstbeast
   - curl -fsSL https://tailscale.com/install.sh | sh
