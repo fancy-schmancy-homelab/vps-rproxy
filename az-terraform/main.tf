@@ -20,7 +20,7 @@ resource "azurerm_resource_group" "disk_encryption_rg" {
 
 resource "azurerm_virtual_network" "vm_network" {
   name                = "vm-network"
-  address_space       = ["10.100.0.0/16", "2404:f800:8000:122::/63"]
+  address_space       = ["10.100.0.0/16", "2404:f800:8000:122::/64"]
   location            = azurerm_resource_group.network_rg.location
   resource_group_name = azurerm_resource_group.network_rg.name
   depends_on          = [azurerm_resource_group.network_rg]
