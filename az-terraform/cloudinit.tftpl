@@ -25,7 +25,7 @@ runcmd:
   - sudo dnf install -y bubblewrap git python3-pip wget nc vim golang jq
   - su - thirstbeast -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
   - su - thirstbeast -c "/home/linuxbrew/.linuxbrew/bin/brew install -y zsh pure fastfetch zsh-autosuggestions zsh-syntax-highlighting"
-  - sudo echo "/home/linuxbrew/.linuxbrew/bin/zsh" >> /etc/shells
+  - sudo sh -c 'echo "/home/linuxbrew/.linuxbrew/bin/zsh" >> /etc/shells'
   - sudo chsh -s /home/linuxbrew/.linuxbrew/bin/zsh thirstbeast
   - curl -fsSL https://tailscale.com/install.sh | sh
   - ['sh', '-c', "echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf && echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf && sudo sysctl -p /etc/sysctl.d/99-tailscale.conf" ]
