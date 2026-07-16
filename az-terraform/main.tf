@@ -175,6 +175,7 @@ resource "azurerm_network_security_rule" "allow_tailscale_relay_udp" {
   protocol                     = "Udp"
   source_address_prefix        = "Internet"
   source_port_range            = "*"
+  # UDP 45129 is used by Tailscale DERP relay connections.
   destination_port_range       = "45129"
   destination_address_prefixes = ["10.100.1.0/24"]
   resource_group_name          = azurerm_resource_group.network_rg.name
