@@ -145,6 +145,7 @@ resource "azurerm_network_security_rule" "allow_tailscale_udp" {
   protocol                     = "Udp"
   source_address_prefix        = "Internet"
   source_port_range            = "*"
+  # 41641/UDP is Tailscale's default direct-connection (DERP bypass) listen port.
   destination_port_range       = "41641"
   destination_address_prefixes = ["10.100.1.0/24"]
   resource_group_name          = azurerm_resource_group.network_rg.name
@@ -160,6 +161,7 @@ resource "azurerm_network_security_rule" "allow_tailscale_udpv6" {
   protocol                     = "Udp"
   source_address_prefix        = "Internet"
   source_port_range            = "*"
+  # 41641/UDP is Tailscale's default direct-connection (DERP bypass) listen port.
   destination_port_range       = "41641"
   destination_address_prefixes = ["2404:f800:8000:122::/64"]
   resource_group_name          = azurerm_resource_group.network_rg.name
