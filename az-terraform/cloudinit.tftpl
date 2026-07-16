@@ -9,8 +9,8 @@ write_files:
       alias update="sudo dnf update && brew update && brew upgrade"
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
       fpath+=("$(brew --prefix)/share/zsh/site-functions")
-      source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-      source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+      source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+      source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
       HISTFILE=~/.zsh_history
       HISTSIZE=10000
       SAVEHIST=10000
