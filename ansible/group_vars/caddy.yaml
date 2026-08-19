@@ -9,21 +9,21 @@ caddy_tls_providers:
 caddy_endpoints:
   - friendly_name: jellyfin
     fqdn: jf.amireally.online
-    upstream: "etheirys:8096"
+    upstream: "ultima-thule:8096"
     tls_insecure: false
     tls_provider: cloudflare
   - friendly_name: audiobookshelf
     fqdn: abs.amireally.online
-    upstream: "etheirys:30067"
+    upstream: "ultima-thule:30067"
     tls_insecure: false
     tls_provider: cloudflare
   - friendly_name: pocket-id
     fqdn: oidc.amireally.online
-    upstream: "etheirys:30218"
+    upstream: "ultima-thule:30218"
     tls_insecure: false
     tls_provider: cloudflare
   - friendly_name: navidrome
     fqdn: nd.amireally.online
-    upstream: "etheirys:4533"
+    upstream: "ultima-thule:4533"
     tls_insecure: false
     tls_provider: cloudflare
