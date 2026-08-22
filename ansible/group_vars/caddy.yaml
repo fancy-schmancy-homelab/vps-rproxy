@@ -27,3 +27,12 @@ caddy_endpoints:
     upstream: "ultima-thule:4533"
     tls_insecure: false
     tls_provider: cloudflare
+
+caddy_geoblock:
+  - db_path:
+      - /usr/share/GeoIP/GeoLite2-Country.mmdb
+    allow_countries:
+      - US
+      - CA
+    blocked_status: 451
+    blocked_message: "Access from your country is not allowed."

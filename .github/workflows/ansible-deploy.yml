@@ -50,3 +50,6 @@ jobs:
                 ANSIBLE_HOST_KEY_CHECKING: "False"
                 ANSIBLE_CONFIG: ./ansible/ansible.cfg
                 CF_TOKEN: ${{ secrets.CF_TOKEN }}
+                MAXMIND_ACCOUNT_ID: ${{ secrets.MAXMIND_ACCOUNT_ID }}
+                MAXMIND_LICENSE_KEY: ${{ secrets.MAXMIND_LICENSE_KEY }}
+                MAXMIND_EDITION_IDS: ${{ secrets.MAXMIND_EDITION_IDS }}

@@ -5,7 +5,7 @@ write_files:
     permissions: '0644'
     defer: true
     content: |
-      plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+      plugins=(gitfast eza fzf tailscale tmux zsh-autosuggestions zsh-syntax-highlighting)
       alias update="sudo dnf update && brew update && brew upgrade"
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
       fpath+=("$(brew --prefix)/share/zsh/site-functions")
@@ -22,7 +22,7 @@ write_files:
 runcmd:
   - sudo dnf update -y
   - sudo dnf group install -y 'Development Tools'
-  - sudo dnf install -y bubblewrap git python3-pip wget nc vim golang jq
+  - sudo dnf install -y bubblewrap git python3-pip wget nc vim golang jq eza fzf tmux
   - su - thirstbeast -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
   - su - thirstbeast -c "/home/linuxbrew/.linuxbrew/bin/brew install zsh pure fastfetch zsh-autosuggestions zsh-syntax-highlighting"
   - sudo sh -c 'echo "/home/linuxbrew/.linuxbrew/bin/zsh" >> /etc/shells'

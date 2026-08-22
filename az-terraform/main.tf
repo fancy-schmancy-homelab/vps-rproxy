@@ -206,7 +206,6 @@ resource "azurerm_subnet" "vm_subnet" {
   virtual_network_name = azurerm_virtual_network.vm_network.name
   address_prefixes     = ["10.100.1.0/24", "2404:f800:8000:122::/64"]
   depends_on           = [azurerm_virtual_network.vm_network]
-  service_endpoints    = ["Microsoft.KeyVault"]
 }
 
 resource "azurerm_subnet_network_security_group_association" "vm_subnet_nsg" {
@@ -358,9 +357,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   source_image_reference {
-    publisher = "almalinux"
-    offer     = "almalinux-arm"
-    sku       = "10-arm64-gen2"
+    publisher = "microsoftazurelinux"
+    offer     = "azurelinux-4"
+    sku       = "4-arm64"
     version   = "latest"
   }
 }

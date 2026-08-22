@@ -2,5 +2,8 @@
   - hosts: vps-rproxy-vm
     vars:
       cloudflare_api_token: "{{ lookup('env', 'CF_TOKEN') }}"
+      maxmind_account_id: "{{ lookup('env', 'MAXMIND_ACCOUNT_ID') }}"
+      maxmind_license_key: "{{ lookup('env', 'MAXMIND_LICENSE_KEY') }}"
+      maxmind_edition_ids: "{{ lookup('env', 'MAXMIND_EDITION_IDS') }}"
     roles:
       - lumilias.caddy
