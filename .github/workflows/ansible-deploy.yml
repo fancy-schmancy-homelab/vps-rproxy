@@ -52,4 +52,5 @@ jobs:
                 CF_TOKEN: ${{ secrets.CF_TOKEN }}
                 MAXMIND_ACCOUNT_ID: ${{ secrets.MAXMIND_ACCOUNT_ID }}
                 MAXMIND_LICENSE_KEY: ${{ secrets.MAXMIND_LICENSE_KEY }}
-                MAXMIND_EDITION_IDS: ${{ secrets.MAXMIND_EDITION_IDS }}
+                MAXMIND_EDITION_IDS: ${{ vars.MAXMIND_EDITION_IDS }}
+                GEOIP_VERSION: ${{ vars.GEOIP_VERSION }}
