@@ -5,5 +5,6 @@
       maxmind_account_id: "{{ lookup('env', 'MAXMIND_ACCOUNT_ID') }}"
       maxmind_license_key: "{{ lookup('env', 'MAXMIND_LICENSE_KEY') }}"
       maxmind_edition_ids: "{{ lookup('env', 'MAXMIND_EDITION_IDS') }}"
+      geoip_version: "{{ lookup('env', 'GEOIP_VERSION') }}"
     roles:
       - lumilias.caddy
