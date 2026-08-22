@@ -29,7 +29,8 @@ caddy_endpoints:
     tls_provider: cloudflare
 
 caddy_geoblock:
-  - db_path: /usr/share/GeoIP/GeoLite2-Country.mmdb
+  - db_path:
+      - /usr/share/GeoIP/GeoLite2-Country.mmdb
     allow_countries:
       - US
       - CA
