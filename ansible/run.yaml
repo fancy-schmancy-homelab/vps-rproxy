@@ -8,6 +8,27 @@
       maxmind_edition_ids: "{{ lookup('env', 'MAXMIND_EDITION_IDS') }}"
       geoip_version: "{{ lookup('env', 'GEOIP_VERSION') }}"
     pre_tasks:
+      - name: Install locales package
+        ansible.builtin.apt:
+          name: locales
+          state: present
+          update_cache: true
+          cache_valid_time: 3600
+
+      - name: Generate en_US.UTF-8 locale
+        community.general.locale_gen:
+          name: en_US.UTF-8
+          state: present
+
+      - name: Set default system locale
+        ansible.builtin.copy:
+          dest: /etc/default/locale
+          owner: root
+          group: root
+          mode: '0644'
+          content: |
+            LANG=en_US.UTF-8
+
       - name: Install system packages
         ansible.builtin.apt:
           update_cache: true
