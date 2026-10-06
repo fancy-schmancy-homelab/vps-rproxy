@@ -22,11 +22,6 @@ caddy_endpoints:
     upstream: "ultima-thule:30218"
     tls_insecure: false
     tls_provider: cloudflare
-  - friendly_name: navidrome
-    fqdn: nd.amireally.online
-    upstream: "ultima-thule:4533"
-    tls_insecure: false
-    tls_provider: cloudflare
 
 caddy_geoblock:
   db_path:
