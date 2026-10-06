@@ -69,7 +69,6 @@ The Caddy configuration uses Cloudflare DNS-01 and geoblocks to the United State
 | `jf.amireally.online` | `ultima-thule:8096` |
 | `abs.amireally.online` | `ultima-thule:30067` |
 | `oidc.amireally.online` | `ultima-thule:30218` |
-| `nd.amireally.online` | `ultima-thule:4533` |
 
 ## Files
 
