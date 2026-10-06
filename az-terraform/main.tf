@@ -375,43 +375,43 @@ resource "azurerm_role_assignment" "vm_tailscale_secret_access" {
   principal_id         = azurerm_user_assigned_identity.vm.principal_id
 }
 
-# resource "azurerm_linux_virtual_machine" "vm" {
-#   name                       = "vps-rproxy-vm"
-#   resource_group_name        = azurerm_resource_group.vm_rg.name
-#   location                   = azurerm_resource_group.vm_rg.location
-#   size                       = "Standard_B2pls_v2"
-#   admin_username             = var.vm_admin_username
-#   encryption_at_host_enabled = true
-#   identity {
-#     type         = "UserAssigned"
-#     identity_ids = [azurerm_user_assigned_identity.vm.id]
-#   }
-#   depends_on = [azurerm_role_assignment.vm_tailscale_secret_access]
-#   # vtpm_enabled               = true
-#   # secure_boot_enabled        = true
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                       = "vps-rproxy-vm"
+  resource_group_name        = azurerm_resource_group.vm_rg.name
+  location                   = azurerm_resource_group.vm_rg.location
+  size                       = "Standard_B2pls_v2"
+  admin_username             = var.vm_admin_username
+  encryption_at_host_enabled = true
+  identity {
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.vm.id]
+  }
+  depends_on = [azurerm_role_assignment.vm_tailscale_secret_access]
+  # vtpm_enabled               = true
+  # secure_boot_enabled        = true
 
-#   network_interface_ids = [azurerm_network_interface.vm_nic.id]
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
-#   custom_data = base64encode(templatefile("${path.module}/cloudinit.tftpl", {
-#     tailscale_secret_url = "https://${azurerm_key_vault.kv.name}.vault.azure.net/secrets/tailscale-auth-key"
-#   }))
+  custom_data = base64encode(templatefile("${path.module}/cloudinit.tftpl", {
+    tailscale_secret_url = "https://${azurerm_key_vault.kv.name}.vault.azure.net/secrets/tailscale-auth-key"
+  }))
 
-#   admin_ssh_key {
-#     username   = var.vm_admin_username
-#     public_key = data.azurerm_key_vault_secret.admin_ssh_public_key.value
-#   }
+  admin_ssh_key {
+    username   = var.vm_admin_username
+    public_key = data.azurerm_key_vault_secret.admin_ssh_public_key.value
+  }
 
-#   os_disk {
-#     caching                = "ReadWrite"
-#     storage_account_type   = "StandardSSD_LRS"
-#     disk_size_gb           = 32
-#     disk_encryption_set_id = azurerm_disk_encryption_set.vm_disk_encryption.id
-#   }
+  os_disk {
+    caching                = "ReadWrite"
+    storage_account_type   = "StandardSSD_LRS"
+    disk_size_gb           = 32
+    disk_encryption_set_id = azurerm_disk_encryption_set.vm_disk_encryption.id
+  }
 
-#   source_image_reference {
-#     publisher = "Debian"
-#     offer     = "debian-13"
-#     sku       = "13-arm64"
-#     version   = "latest"
-#   }
-# }
+  source_image_reference {
+    publisher = "Debian"
+    offer     = "debian-13"
+    sku       = "13-arm64"
+    version   = "latest"
+  }
+}
