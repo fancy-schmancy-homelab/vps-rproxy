@@ -3,10 +3,3 @@ data "azuread_service_principal" "current" {
 }
 
 data "azurerm_subscription" "current" {}
-
-data "template_file" "cloud-config" {
-  template = "${file("cloudinit.tftpl")}"
-  vars = {
-    tailscale_auth_key = var.TS_AUTH_KEY
-  }
-}

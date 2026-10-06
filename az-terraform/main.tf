@@ -205,7 +205,10 @@ resource "azurerm_subnet" "vm_subnet" {
   resource_group_name  = azurerm_resource_group.network_rg.name
   virtual_network_name = azurerm_virtual_network.vm_network.name
   address_prefixes     = ["10.100.1.0/24", "2404:f800:8000:122::/64"]
-  depends_on           = [azurerm_virtual_network.vm_network]
+  service_endpoints = [
+    "Microsoft.KeyVault"
+  ]
+  depends_on = [azurerm_virtual_network.vm_network]
 }
 
 resource "azurerm_subnet_network_security_group_association" "vm_subnet_nsg" {
@@ -339,12 +342,17 @@ resource "azurerm_linux_virtual_machine" "vm" {
   encryption_at_host_enabled = true
   patch_mode                 = "AutomaticByPlatform"
   patch_assessment_mode      = "AutomaticByPlatform"
+  identity {
+    type = "SystemAssigned"
+  }
   # vtpm_enabled               = true
   # secure_boot_enabled        = true
 
   network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
-  custom_data = base64encode(data.template_file.cloud-config.rendered) # Adjust path to your cloud-init file
+  custom_data = base64encode(templatefile("${path.module}/cloudinit.tftpl", {
+    tailscale_secret_url = "https://${azurerm_key_vault.kv.name}.vault.azure.net/secrets/tailscale-auth-key"
+  }))
 
   admin_ssh_key {
     username   = var.vm_admin_username
@@ -364,4 +372,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "13-arm64"
     version   = "latest"
   }
+}
+
+resource "azurerm_role_assignment" "vm_tailscale_secret_access" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_linux_virtual_machine.vm.identity[0].principal_id
 }

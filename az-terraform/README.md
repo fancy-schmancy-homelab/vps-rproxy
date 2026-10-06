@@ -10,8 +10,9 @@ This Terraform configuration provisions the Azure VPS used as the reverse proxy 
 - Dedicated resource groups for the VM, network, Key Vault, and disk encryption set
 - Dual-stack virtual network and subnet with static public IPv4 and IPv6 addresses
 - Network security rules for ICMP, HTTPS over TCP/UDP, Tailscale direct connections on UDP `41641`, and Tailscale relay traffic on UDP `45129`
-- Cloud-init installs `dnf` development packages, Homebrew, Zsh tooling, and Tailscale
+- Cloud-init installs Debian packages, Homebrew, Zsh tooling, and Tailscale
 - Tailscale is enabled with SSH, subnet routing for `10.100.1.0/24`, and exit-node advertising
+- The VM's system-assigned identity reads the Tailscale auth key from Key Vault; the subnet has the Key Vault service endpoint required by the vault firewall
 
 ## Terraform usage
 
@@ -30,8 +31,14 @@ subscription_id                    = "your-subscription-id"
 tenant_id                          = "your-tenant-id"
 vm_admin_username                  = "thirstbeast"
 admin_ssh_key                      = "ssh-ed25519 AAAA..."
-TS_AUTH_KEY                        = "tskey-auth-..."
 ```
+
+Before creating the VM, add a short-lived/ephemeral Tailscale auth key as a
+Key Vault secret named
+`tailscale-auth-key` in the configured vault. Do not pass the key through
+Terraform variables or commit it to a `.tfvars` file. For a new deployment,
+create the Key Vault first, add the secret through the Azure portal, then apply
+the remaining Terraform configuration.
 
 Run Terraform from this directory:
 
@@ -41,7 +48,9 @@ terraform plan
 terraform apply
 ```
 
-Keep `admin_ssh_key`, `allowed_ip_addresses`, and `TS_AUTH_KEY` sensitive. The Tailscale auth key is rendered into cloud-init during VM creation.
+Keep `admin_ssh_key` and `allowed_ip_addresses` sensitive. The Tailscale auth
+key is not rendered into Terraform configuration or cloud-init; the VM's
+managed identity retrieves it from Key Vault during first boot.
 
 ## Ansible deployment
 
