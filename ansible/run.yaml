@@ -1,10 +1,163 @@
 ---
   - hosts: vps-rproxy-vm
+    become: true
     vars:
       cloudflare_api_token: "{{ lookup('env', 'CF_TOKEN') }}"
       maxmind_account_id: "{{ lookup('env', 'MAXMIND_ACCOUNT_ID') }}"
       maxmind_license_key: "{{ lookup('env', 'MAXMIND_LICENSE_KEY') }}"
       maxmind_edition_ids: "{{ lookup('env', 'MAXMIND_EDITION_IDS') }}"
       geoip_version: "{{ lookup('env', 'GEOIP_VERSION') }}"
+    pre_tasks:
+      - name: Install system packages
+        ansible.builtin.apt:
+          update_cache: true
+          cache_valid_time: 3600
+          name:
+            - build-essential
+            - bubblewrap
+            - eza
+            - file
+            - fzf
+            - git
+            - golang
+            - netcat-openbsd
+            - procps
+            - python3-pip
+            - rsyslog
+            - rsyslog-gnutls
+            - tmux
+            - unattended-upgrades
+            - vim
+            - wget
+          state: present
+
+      - name: Configure automatic package updates
+        ansible.builtin.copy:
+          dest: /etc/apt/apt.conf.d/20auto-upgrades
+          owner: root
+          group: root
+          mode: '0644'
+          content: |
+            APT::Periodic::Update-Package-Lists "1";
+            APT::Periodic::Unattended-Upgrade "1";
+
+      - name: Configure unattended-upgrades behavior
+        ansible.builtin.copy:
+          dest: /etc/apt/apt.conf.d/52unattended-upgrades-local
+          owner: root
+          group: root
+          mode: '0644'
+          content: |
+            Unattended-Upgrade::Automatic-Reboot "true";
+            Unattended-Upgrade::Automatic-Reboot-Time "04:00";
+            Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+      - name: Configure rsyslog forwarding
+        ansible.builtin.copy:
+          dest: /etc/rsyslog.d/90-cribl.conf
+          owner: root
+          group: root
+          mode: '0644'
+          content: |
+            global(
+              DefaultNetstreamDriver="gtls"
+              DefaultNetstreamDriverCAFile="/etc/ssl/certs/ca-certificates.crt"
+            )
+            *.* action(
+              type="omfwd"
+              target="default.main.pedantic-cori-0p9azq3.cribl.cloud"
+              port="6514"
+              protocol="tcp"
+              StreamDriver="gtls"
+              StreamDriverMode="1"
+              StreamDriverAuthMode="x509/name"
+              StreamDriverPermittedPeers="*.cribl.cloud"
+              action.resumeRetryCount="-1"
+              queue.type="LinkedList"
+              queue.filename="cribl_fwd"
+              queue.maxDiskSpace="256m"
+              queue.saveOnShutdown="on"
+            )
+        notify: Restart rsyslog
+
+      - name: Enable and start rsyslog
+        ansible.builtin.service:
+          name: rsyslog
+          enabled: true
+          state: started
+
+      - name: Install Homebrew
+        become_user: thirstbeast
+        ansible.builtin.shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        args:
+          creates: /home/linuxbrew/.linuxbrew/bin/brew
+        environment:
+          NONINTERACTIVE: "1"
+
+      - name: Check installed Homebrew packages
+        become_user: thirstbeast
+        ansible.builtin.command:
+          argv:
+            - /home/linuxbrew/.linuxbrew/bin/brew
+            - list
+            - --versions
+            - "{{ item }}"
+        loop:
+          - fastfetch
+          - pure
+          - topgrade
+          - zsh
+          - zsh-autosuggestions
+          - zsh-syntax-highlighting
+        register: homebrew_package_check
+        changed_when: false
+        failed_when: homebrew_package_check.rc not in [0, 1]
+
+      - name: Install missing Homebrew packages
+        become_user: thirstbeast
+        ansible.builtin.command:
+          argv:
+            - /home/linuxbrew/.linuxbrew/bin/brew
+            - install
+            - "{{ item.item }}"
+        loop: "{{ homebrew_package_check.results }}"
+        when: item.rc == 1
+
+      - name: Add Homebrew Zsh to valid shells
+        ansible.builtin.lineinfile:
+          path: /etc/shells
+          line: /home/linuxbrew/.linuxbrew/bin/zsh
+          state: present
+
+      - name: Set the login shell for thirstbeast
+        ansible.builtin.user:
+          name: thirstbeast
+          shell: /home/linuxbrew/.linuxbrew/bin/zsh
+
+      - name: Configure Zsh for thirstbeast
+        ansible.builtin.copy:
+          dest: /home/thirstbeast/.zshrc
+          owner: thirstbeast
+          group: thirstbeast
+          mode: '0644'
+          content: |
+            plugins=(gitfast eza fzf tailscale tmux zsh-autosuggestions zsh-syntax-highlighting)
+            alias update="sudo apt update && sudo apt upgrade -y && brew update && brew upgrade"
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+            fpath+=("$(brew --prefix)/share/zsh/site-functions")
+            source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+            source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+            HISTFILE=~/.zsh_history
+            HISTSIZE=10000
+            SAVEHIST=10000
+            setopt INC_APPEND_HISTORY
+            autoload -U promptinit; promptinit
+            prompt pure
+            fastfetch
     roles:
       - lumilias.caddy
+    handlers:
+      - name: Restart rsyslog
+        ansible.builtin.service:
+          name: rsyslog
+          state: restarted

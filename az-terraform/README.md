@@ -10,7 +10,7 @@ This Terraform configuration provisions the Azure VPS used as the reverse proxy 
 - Dedicated resource groups for the VM, network, Key Vault, and disk encryption set
 - Dual-stack virtual network and subnet with static public IPv4 and IPv6 addresses
 - Network security rules for ICMP, HTTPS over TCP/UDP, Tailscale direct connections on UDP `41641`, and Tailscale relay traffic on UDP `45129`
-- Cloud-init installs Debian packages, Homebrew, Zsh tooling, and Tailscale
+- Cloud-init installs the minimum tools needed to join Tailscale; Ansible installs the remaining Debian packages, Homebrew, and Zsh tooling
 - Tailscale is enabled with SSH, subnet routing for `10.100.1.0/24`, and exit-node advertising
 - Syslog is forwarded via rsyslog over TLS (TCP 6514) to `default.main.pedantic-cori-0p9azq3.cribl.cloud`, with a disk-assisted queue for outages
 - The VM's user-assigned identity (created separately so its Key Vault role can be granted before the VM exists) reads the Tailscale auth key from Key Vault; the subnet has the Key Vault service endpoint required by the vault firewall
