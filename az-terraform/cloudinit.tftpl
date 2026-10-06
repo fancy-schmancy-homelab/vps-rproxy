@@ -99,7 +99,7 @@ runcmd:
   - sudo DEBIAN_FRONTEND=noninteractive apt install -y jq curl ca-certificates rsyslog rsyslog-gnutls unattended-upgrades
   - sudo DEBIAN_FRONTEND=noninteractive apt install -y bubblewrap git python3-pip wget netcat-openbsd vim golang eza fzf tmux
   - su - thirstbeast -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
-  - su - thirstbeast -c "/home/linuxbrew/.linuxbrew/bin/brew install zsh pure fastfetch zsh-autosuggestions zsh-syntax-highlighting"
+  - su - thirstbeast -c "/home/linuxbrew/.linuxbrew/bin/brew install topgrade zsh pure fastfetch zsh-autosuggestions zsh-syntax-highlighting"
   - sudo sh -c 'echo "/home/linuxbrew/.linuxbrew/bin/zsh" >> /etc/shells'
   - sudo chsh -s /home/linuxbrew/.linuxbrew/bin/zsh thirstbeast
   - systemctl enable rsyslog
