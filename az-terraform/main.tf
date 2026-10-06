@@ -342,8 +342,6 @@ resource "azurerm_linux_virtual_machine" "vm" {
   size                       = "Standard_B2pls_v2"
   admin_username             = var.vm_admin_username
   encryption_at_host_enabled = true
-  patch_mode                 = "AutomaticByPlatform"
-  patch_assessment_mode      = "AutomaticByPlatform"
   identity {
     type = "SystemAssigned"
   }

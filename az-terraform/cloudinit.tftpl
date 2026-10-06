@@ -35,6 +35,21 @@ write_files:
         --advertise-routes=10.100.1.0/24 --auth-key="$auth_key"
       unset auth_key token
 
+  - path: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root:root
+    permissions: '0644'
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+
+  - path: /etc/apt/apt.conf.d/52unattended-upgrades-local
+    owner: root:root
+    permissions: '0644'
+    content: |
+      Unattended-Upgrade::Automatic-Reboot "true";
+      Unattended-Upgrade::Automatic-Reboot-Time "04:00";
+      Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
   - path: /home/thirstbeast/.zshrc
     owner: thirstbeast:thirstbeast
     permissions: '0644'
@@ -57,7 +72,7 @@ write_files:
 runcmd:
   - sudo apt update -y
   - sudo apt install -y build-essential
-  - sudo apt install -y bubblewrap git python3-pip wget nc vim golang jq eza fzf tmux
+  - sudo apt install -y bubblewrap git python3-pip wget nc vim golang jq eza fzf tmux unattended-upgrades
   - su - thirstbeast -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
   - su - thirstbeast -c "/home/linuxbrew/.linuxbrew/bin/brew install zsh pure fastfetch zsh-autosuggestions zsh-syntax-highlighting"
   - sudo sh -c 'echo "/home/linuxbrew/.linuxbrew/bin/zsh" >> /etc/shells'
