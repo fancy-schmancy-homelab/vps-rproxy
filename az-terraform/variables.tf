@@ -46,9 +46,3 @@ variable "vm_admin_username" {
   description = "Admin username for the virtual machine."
   type        = string
 }
-
-variable "admin_ssh_key" {
-  description = "SSH public key for the admin user."
-  type        = string
-  sensitive   = true
-}

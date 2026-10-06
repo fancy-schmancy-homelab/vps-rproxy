@@ -302,6 +302,34 @@ resource "azurerm_role_assignment" "service_principal_kv_access" {
   principal_id         = data.azuread_service_principal.current.object_id
 }
 
+ephemeral "tls_private_key" "admin" {
+  algorithm = "ED25519"
+}
+
+resource "azurerm_key_vault_secret" "admin_ssh_private_key" {
+  name             = "admin-ssh-private-key"
+  value_wo         = ephemeral.tls_private_key.admin.private_key_openssh
+  value_wo_version = 1
+  key_vault_id     = azurerm_key_vault.kv.id
+  content_type     = "ssh-private-key"
+  depends_on       = [azurerm_role_assignment.service_principal_kv_access]
+}
+
+resource "azurerm_key_vault_secret" "admin_ssh_public_key" {
+  name             = "admin-ssh-public-key"
+  value_wo         = ephemeral.tls_private_key.admin.public_key_openssh
+  value_wo_version = 1
+  key_vault_id     = azurerm_key_vault.kv.id
+  content_type     = "ssh-public-key"
+  depends_on       = [azurerm_role_assignment.service_principal_kv_access]
+}
+
+data "azurerm_key_vault_secret" "admin_ssh_public_key" {
+  name         = azurerm_key_vault_secret.admin_ssh_public_key.name
+  key_vault_id = azurerm_key_vault.kv.id
+  depends_on   = [azurerm_key_vault_secret.admin_ssh_public_key]
+}
+
 resource "azurerm_key_vault_key" "vm_disk_encryption" {
   name         = "vm-disk-encryption-key-1"
   key_vault_id = azurerm_key_vault.kv.id
@@ -335,47 +363,55 @@ resource "azurerm_role_assignment" "disk_encryption_set_kv_access" {
 # # # Terraform configuration for Azure Linux Virtual Machine
 # # # This VM will be used to run the reverse proxy
 
-resource "azurerm_linux_virtual_machine" "vm" {
-  name                       = "vps-rproxy-vm"
-  resource_group_name        = azurerm_resource_group.vm_rg.name
-  location                   = azurerm_resource_group.vm_rg.location
-  size                       = "Standard_B2pls_v2"
-  admin_username             = var.vm_admin_username
-  encryption_at_host_enabled = true
-  identity {
-    type = "SystemAssigned"
-  }
-  # vtpm_enabled               = true
-  # secure_boot_enabled        = true
-
-  network_interface_ids = [azurerm_network_interface.vm_nic.id]
-
-  custom_data = base64encode(templatefile("${path.module}/cloudinit.tftpl", {
-    tailscale_secret_url = "https://${azurerm_key_vault.kv.name}.vault.azure.net/secrets/tailscale-auth-key"
-  }))
-
-  admin_ssh_key {
-    username   = var.vm_admin_username
-    public_key = var.admin_ssh_key # Adjust path to your SSH public key
-  }
-
-  os_disk {
-    caching                = "ReadWrite"
-    storage_account_type   = "StandardSSD_LRS"
-    disk_size_gb           = 32
-    disk_encryption_set_id = azurerm_disk_encryption_set.vm_disk_encryption.id
-  }
-
-  source_image_reference {
-    publisher = "Debian"
-    offer     = "debian-13"
-    sku       = "13-arm64"
-    version   = "latest"
-  }
+resource "azurerm_user_assigned_identity" "vm" {
+  name                = "vps-rproxy-vm-identity"
+  resource_group_name = azurerm_resource_group.vm_rg.name
+  location            = azurerm_resource_group.vm_rg.location
 }
 
 resource "azurerm_role_assignment" "vm_tailscale_secret_access" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Secrets User"
-  principal_id         = azurerm_linux_virtual_machine.vm.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.vm.principal_id
 }
+
+# resource "azurerm_linux_virtual_machine" "vm" {
+#   name                       = "vps-rproxy-vm"
+#   resource_group_name        = azurerm_resource_group.vm_rg.name
+#   location                   = azurerm_resource_group.vm_rg.location
+#   size                       = "Standard_B2pls_v2"
+#   admin_username             = var.vm_admin_username
+#   encryption_at_host_enabled = true
+#   identity {
+#     type         = "UserAssigned"
+#     identity_ids = [azurerm_user_assigned_identity.vm.id]
+#   }
+#   depends_on = [azurerm_role_assignment.vm_tailscale_secret_access]
+#   # vtpm_enabled               = true
+#   # secure_boot_enabled        = true
+
+#   network_interface_ids = [azurerm_network_interface.vm_nic.id]
+
+#   custom_data = base64encode(templatefile("${path.module}/cloudinit.tftpl", {
+#     tailscale_secret_url = "https://${azurerm_key_vault.kv.name}.vault.azure.net/secrets/tailscale-auth-key"
+#   }))
+
+#   admin_ssh_key {
+#     username   = var.vm_admin_username
+#     public_key = data.azurerm_key_vault_secret.admin_ssh_public_key.value
+#   }
+
+#   os_disk {
+#     caching                = "ReadWrite"
+#     storage_account_type   = "StandardSSD_LRS"
+#     disk_size_gb           = 32
+#     disk_encryption_set_id = azurerm_disk_encryption_set.vm_disk_encryption.id
+#   }
+
+#   source_image_reference {
+#     publisher = "Debian"
+#     offer     = "debian-13"
+#     sku       = "13-arm64"
+#     version   = "latest"
+#   }
+# }
