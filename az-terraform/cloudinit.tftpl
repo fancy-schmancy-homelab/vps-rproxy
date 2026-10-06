@@ -20,9 +20,9 @@ write_files:
       fastfetch
 
 runcmd:
-  - sudo dnf update -y
-  - sudo dnf group install -y 'Development Tools'
-  - sudo dnf install -y bubblewrap git python3-pip wget nc vim golang jq eza fzf tmux
+  - sudo apt update -y
+  - sudo apt install -y build-essential
+  - sudo apt install -y bubblewrap git python3-pip wget nc vim golang jq eza fzf tmux
   - su - thirstbeast -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
   - su - thirstbeast -c "/home/linuxbrew/.linuxbrew/bin/brew install zsh pure fastfetch zsh-autosuggestions zsh-syntax-highlighting"
   - sudo sh -c 'echo "/home/linuxbrew/.linuxbrew/bin/zsh" >> /etc/shells'

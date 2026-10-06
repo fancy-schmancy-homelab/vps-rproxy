@@ -4,7 +4,8 @@ This Terraform configuration provisions the Azure VPS used as the reverse proxy 
 
 ## Current configuration
 
-- Azure Linux 4 arm64 image on `Standard_B2pls_v2`
+- Debian 13 arm64 image on `Standard_B2pls_v2`
+- Azure Update Manager automatic guest patching for critical and security updates, with periodic assessment
 - 32 GiB `StandardSSD_LRS` OS disk with host encryption and a Key Vault-backed disk encryption set
 - Dedicated resource groups for the VM, network, Key Vault, and disk encryption set
 - Dual-stack virtual network and subnet with static public IPv4 and IPv6 addresses

@@ -138,13 +138,13 @@ resource "azurerm_network_security_rule" "allow_https_udpv6" {
 }
 
 resource "azurerm_network_security_rule" "allow_tailscale_udp" {
-  name                         = "AllowTailscale-UDP"
-  priority                     = 1040
-  direction                    = "Inbound"
-  access                       = "Allow"
-  protocol                     = "Udp"
-  source_address_prefix        = "Internet"
-  source_port_range            = "*"
+  name                  = "AllowTailscale-UDP"
+  priority              = 1040
+  direction             = "Inbound"
+  access                = "Allow"
+  protocol              = "Udp"
+  source_address_prefix = "Internet"
+  source_port_range     = "*"
   # 41641/UDP is Tailscale's default direct-connection (DERP bypass) listen port.
   destination_port_range       = "41641"
   destination_address_prefixes = ["10.100.1.0/24"]
@@ -154,13 +154,13 @@ resource "azurerm_network_security_rule" "allow_tailscale_udp" {
 }
 
 resource "azurerm_network_security_rule" "allow_tailscale_udpv6" {
-  name                         = "AllowTailscale-UDPv6"
-  priority                     = 1041
-  direction                    = "Inbound"
-  access                       = "Allow"
-  protocol                     = "Udp"
-  source_address_prefix        = "Internet"
-  source_port_range            = "*"
+  name                  = "AllowTailscale-UDPv6"
+  priority              = 1041
+  direction             = "Inbound"
+  access                = "Allow"
+  protocol              = "Udp"
+  source_address_prefix = "Internet"
+  source_port_range     = "*"
   # 41641/UDP is Tailscale's default direct-connection (DERP bypass) listen port.
   destination_port_range       = "41641"
   destination_address_prefixes = ["2404:f800:8000:122::/64"]
@@ -170,13 +170,13 @@ resource "azurerm_network_security_rule" "allow_tailscale_udpv6" {
 }
 
 resource "azurerm_network_security_rule" "allow_tailscale_relay_udp" {
-  name                         = "AllowTailscaleRelay-UDP"
-  priority                     = 1050
-  direction                    = "Inbound"
-  access                       = "Allow"
-  protocol                     = "Udp"
-  source_address_prefix        = "Internet"
-  source_port_range            = "*"
+  name                  = "AllowTailscaleRelay-UDP"
+  priority              = 1050
+  direction             = "Inbound"
+  access                = "Allow"
+  protocol              = "Udp"
+  source_address_prefix = "Internet"
+  source_port_range     = "*"
   # UDP 45129 is used by Tailscale DERP relay connections.
   destination_port_range       = "45129"
   destination_address_prefixes = ["10.100.1.0/24"]
@@ -337,6 +337,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
   size                       = "Standard_B2pls_v2"
   admin_username             = var.vm_admin_username
   encryption_at_host_enabled = true
+  patch_mode                 = "AutomaticByPlatform"
+  patch_assessment_mode      = "AutomaticByPlatform"
   # vtpm_enabled               = true
   # secure_boot_enabled        = true
 
@@ -357,43 +359,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   source_image_reference {
-    publisher = "microsoftazurelinux"
-    offer     = "azurelinux-4"
-    sku       = "4-arm64"
+    publisher = "Debian"
+    offer     = "debian-13"
+    sku       = "13-arm64"
     version   = "latest"
   }
 }
-
-# resource "azurerm_linux_virtual_machine" "vm" {
-#   name                       = "vps-rproxy-vm"
-#   resource_group_name        = azurerm_resource_group.vm_rg.name
-#   location                   = azurerm_resource_group.vm_rg.location
-#   size                       = "Standard_B2als_v2"
-#   admin_username             = var.vm_admin_username
-#   encryption_at_host_enabled = true
-#   vtpm_enabled               = true
-#   secure_boot_enabled        = true
-
-#   network_interface_ids = [azurerm_network_interface.vm_nic.id]
-
-#   custom_data = base64encode(data.template_file.cloud-config.rendered) # Adjust path to your cloud-init file
-
-#   admin_ssh_key {
-#     username   = var.vm_admin_username
-#     public_key = var.admin_ssh_key # Adjust path to your SSH public key
-#   }
-
-#   os_disk {
-#     caching                = "ReadWrite"
-#     storage_account_type   = "StandardSSD_LRS"
-#     disk_size_gb           = 32
-#     disk_encryption_set_id = azurerm_disk_encryption_set.vm_disk_encryption.id
-#   }
-
-#   source_image_reference {
-#     publisher = "Debian"
-#     offer     = "debian-13"
-#     sku       = "13-gen2"
-#     version   = "latest"
-#   }
-# }
